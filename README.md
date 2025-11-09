@@ -10,6 +10,9 @@
 The goal of fashr is to implement the functional adaptive shrinkage
 through empirical Bayes.
 
+**Note:** The code to generate the results for the manuscript is
+[here](https://github.com/).
+
 ## Installation
 
 You can install the development version of fashr from
@@ -17,7 +20,7 @@ You can install the development version of fashr from
 
 ``` r
 # install.packages("pak")
-pak::pak("AgueroZZ/fash_software")
+pak::pak("AgueroZZ/fashr")
 ```
 
 ## Example
@@ -49,7 +52,7 @@ fash_fit <- fash(Y = "y", smooth_var = "t", S = "sd", data = datasets,
 #> Completed data setup in 0.00 seconds.
 #> Starting likelihood computation...
 #>   |                                                                              |                                                                      |   0%  |                                                                              |====                                                                  |   5%  |                                                                              |=======                                                               |  10%  |                                                                              |==========                                                            |  15%  |                                                                              |==============                                                        |  20%  |                                                                              |==================                                                    |  25%  |                                                                              |=====================                                                 |  30%  |                                                                              |========================                                              |  35%  |                                                                              |============================                                          |  40%  |                                                                              |================================                                      |  45%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================                                |  55%  |                                                                              |==========================================                            |  60%  |                                                                              |==============================================                        |  65%  |                                                                              |=================================================                     |  70%  |                                                                              |====================================================                  |  75%  |                                                                              |========================================================              |  80%  |                                                                              |============================================================          |  85%  |                                                                              |===============================================================       |  90%  |                                                                              |==================================================================    |  95%  |                                                                              |======================================================================| 100%
-#> Completed likelihood computation in 2.98 seconds.
+#> Completed likelihood computation in 7.99 seconds.
 #> Starting empirical Bayes estimation...
 #> Completed empirical Bayes estimation in 0.00 seconds.
 #> fash object created successfully.
@@ -61,7 +64,7 @@ fash_fit
 #> -------------------
 #> Number of datasets: 20
 #> Likelihood: gaussian
-#> Number of PSD grid values: 10 (initial), 2 (non-trivial)
+#> Number of PSD grid values: 25 (initial), 2 (non-trivial)
 #> Order of Integrated Wiener Process (IWP): 2
 ```
 
@@ -80,10 +83,10 @@ fitted <- predict(fash_fit, index = 1)
 str(fitted)
 #> 'data.frame':    50 obs. of  5 variables:
 #>  $ x     : num  0 0.102 0.204 0.306 0.408 ...
-#>  $ mean  : num  3.41 3.19 2.97 2.75 2.53 ...
-#>  $ median: num  3.42 3.19 2.98 2.75 2.53 ...
-#>  $ lower : num  1.9 1.9 1.87 1.78 1.66 ...
-#>  $ upper : num  4.91 4.46 4.05 3.69 3.37 ...
+#>  $ mean  : num  3.43 3.2 2.98 2.75 2.52 ...
+#>  $ median: num  3.43 3.2 2.98 2.75 2.53 ...
+#>  $ lower : num  1.96 1.94 1.89 1.8 1.67 ...
+#>  $ upper : num  4.88 4.44 4.04 3.68 3.36 ...
 ```
 
 Obtain the posterior samples of the function:
@@ -91,7 +94,7 @@ Obtain the posterior samples of the function:
 ``` r
 fitted_samps <- predict(fash_fit, index = 1, only.samples = TRUE, M = 30)
 str(fitted_samps)
-#>  num [1:50, 1:30] 3.35 3.12 2.96 2.78 2.56 ...
+#>  num [1:50, 1:30] 3.36 3.13 2.96 2.78 2.57 ...
 ```
 
 ``` r
@@ -117,5 +120,5 @@ str(fdr_result)
 #> List of 1
 #>  $ fdr_results:'data.frame': 20 obs. of  2 variables:
 #>   ..$ index: int [1:20] 4 13 17 12 1 15 9 3 20 14 ...
-#>   ..$ FDR  : num [1:20] 3.18e-16 3.88e-16 6.96e-12 2.86e-11 4.14e-09 ...
+#>   ..$ FDR  : num [1:20] 3.49e-16 4.28e-16 7.28e-12 3.22e-11 3.99e-09 ...
 ```
