@@ -27,7 +27,7 @@ The goal of fashr is to implement the functional adaptive shrinkage through empi
 
 You can install the development version of fashr from [GitHub](https://github.com/) with:
 
-``` r
+```{r}
 # install.packages("pak")
 pak::pak("stephenslab/fashr")
 ```
@@ -37,7 +37,7 @@ pak::pak("stephenslab/fashr")
 This is a basic example, which tries to identify non-linear functions in a set of datasets.
 We use `order = 2` to apply the second order IWP, which has a base model S<sub>0</sub> being the space of linear functions.
 
-```{r example}
+```{r example, results="hide"}
 library(fashr)
 
 # Simulate five datasets
@@ -63,7 +63,7 @@ fash_fit
 
 Take a look at the structure plot ordered by local false discovery rate:
 
-```{r}
+```{r, fig.height=3.5, fig.width=4}
 plot(fash_fit, ordering = "lfdr")
 ```
 
@@ -81,23 +81,19 @@ fitted_samps <- predict(fash_fit, index = 1, only.samples = TRUE, M = 30)
 str(fitted_samps)
 ```
 
-```{r}
+```{r, fig.height=4, fig.width=4}
 plot(datasets[[1]]$t, datasets[[1]]$y, type = "p", col = "black", ylab = "y", xlab = "t")
 lines(fitted$x, fitted$mean, col = "red")
 polygon(c(fitted$x, rev(fitted$x)), c(fitted$lower, rev(fitted$upper)), col = rgb(1, 0, 0, 0.2), border = NA)
 matlines(fitted$x, fitted_samps[, 1:5], col = "blue", lty = 2, lwd = 0.5)
 ```
 
-
 Compute the FDR, and highlight the datasets with FDR < 0.1:
 
-```{r}
+```{r, fig.height=5, fig.width=5}
 fdr_result <- fdr_control(fash_fit, alpha = 0.1, plot = TRUE)
 ```
 
 ```{r}
 str(fdr_result)
 ```
-
-
-

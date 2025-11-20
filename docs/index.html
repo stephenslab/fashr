@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.32</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.33</span>
       </span>
     </div>
 
@@ -79,7 +79,8 @@
 <p>You can install the development version of fashr from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu">pak</span><span class="op">(</span><span class="st">"stephenslab/fashr"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu">pak</span><span class="op">(</span><span class="st">"stephenslab/fashr"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in loadNamespace(x): there is no package called 'pak'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -102,15 +103,7 @@
 <span></span>
 <span><span class="co"># Fit the model</span></span>
 <span><span class="va">fash_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fash.html">fash</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="st">"y"</span>, smooth_var <span class="op">=</span> <span class="st">"t"</span>, S <span class="op">=</span> <span class="st">"sd"</span>, data <span class="op">=</span> <span class="va">datasets</span>, </span>
-<span>                  order <span class="op">=</span> <span class="fl">2</span>, likelihood <span class="op">=</span> <span class="st">"gaussian"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Starting data setup...</span></span>
-<span><span class="co">#&gt; Completed data setup in 0.00 seconds.</span></span>
-<span><span class="co">#&gt; Starting likelihood computation...</span></span>
-<span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |====                                                                  |   5%  |                                                                              |=======                                                               |  10%  |                                                                              |==========                                                            |  15%  |                                                                              |==============                                                        |  20%  |                                                                              |==================                                                    |  25%  |                                                                              |=====================                                                 |  30%  |                                                                              |========================                                              |  35%  |                                                                              |============================                                          |  40%  |                                                                              |================================                                      |  45%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================                                |  55%  |                                                                              |==========================================                            |  60%  |                                                                              |==============================================                        |  65%  |                                                                              |=================================================                     |  70%  |                                                                              |====================================================                  |  75%  |                                                                              |========================================================              |  80%  |                                                                              |============================================================          |  85%  |                                                                              |===============================================================       |  90%  |                                                                              |==================================================================    |  95%  |                                                                              |======================================================================| 100%</span></span>
-<span><span class="co">#&gt; Completed likelihood computation in 7.78 seconds.</span></span>
-<span><span class="co">#&gt; Starting empirical Bayes estimation...</span></span>
-<span><span class="co">#&gt; Completed empirical Bayes estimation in 0.00 seconds.</span></span>
-<span><span class="co">#&gt; fash object created successfully.</span></span></code></pre></div>
+<span>                  order <span class="op">=</span> <span class="fl">2</span>, likelihood <span class="op">=</span> <span class="st">"gaussian"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fash_fit</span></span>
 <span><span class="co">#&gt; Fitted fash Object</span></span>
@@ -122,7 +115,11 @@
 <p>Take a look at the structure plot ordered by local false discovery rate:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fash_fit</span>, ordering <span class="op">=</span> <span class="st">"lfdr"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
+<div class="figure">
+<img src="reference/figures/README-unnamed-chunk-4-1.png" alt="plot of chunk unnamed-chunk-4"><p class="caption">
+plot of chunk unnamed-chunk-4
+</p>
+</div>
 <p>Obtain the posterior summary of the function for the first dataset:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fash_fit</span>, index <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -143,12 +140,20 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">fitted</span><span class="op">$</span><span class="va">x</span>, <span class="va">fitted</span><span class="op">$</span><span class="va">mean</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">fitted</span><span class="op">$</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">fitted</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">fitted</span><span class="op">$</span><span class="va">lower</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">fitted</span><span class="op">$</span><span class="va">upper</span><span class="op">)</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matlines</a></span><span class="op">(</span><span class="va">fitted</span><span class="op">$</span><span class="va">x</span>, <span class="va">fitted_samps</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lty <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
+<div class="figure">
+<img src="reference/figures/README-unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"><p class="caption">
+plot of chunk unnamed-chunk-7
+</p>
+</div>
 <p>Compute the FDR, and highlight the datasets with FDR &lt; 0.1:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fdr_control.html">fdr_control</a></span><span class="op">(</span><span class="va">fash_fit</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 5 datasets are significant at alpha level 0.10. Total datasets tested: 20.</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%"></p>
+<div class="figure">
+<img src="reference/figures/README-unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"><p class="caption">
+plot of chunk unnamed-chunk-8
+</p>
+</div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fdr_result</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
