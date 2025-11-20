@@ -5,6 +5,8 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+
+
 # fashr
 
 <!-- badges: start -->
@@ -97,6 +99,8 @@ str(fitted_samps)
 #>  num [1:50, 1:30] 3.36 3.13 2.96 2.78 2.57 ...
 ```
 
+Visualize the predictions for the first dataset together with the data:
+
 
 ``` r
 plot(datasets[[1]]$t, datasets[[1]]$y, type = "p", col = "black", ylab = "y", xlab = "t")
@@ -125,9 +129,27 @@ fdr_result <- fdr_control(fash_fit, alpha = 0.1, plot = TRUE)
 
 
 ``` r
-str(fdr_result)
-#> List of 1
-#>  $ fdr_results:'data.frame':	20 obs. of  2 variables:
-#>   ..$ index: int [1:20] 4 13 17 12 1 15 9 3 20 14 ...
-#>   ..$ FDR  : num [1:20] 3.49e-16 4.28e-16 7.28e-12 3.22e-11 3.99e-09 ...
+fdr_result
+#> $fdr_results
+#>            index       FDR
+#> Dataset_4      4 3.492e-16
+#> Dataset_13    13 4.283e-16
+#> Dataset_17    17 7.280e-12
+#> Dataset_12    12 3.224e-11
+#> Dataset_1      1 3.988e-09
+#> Dataset_15    15 1.586e-01
+#> Dataset_9      9 2.741e-01
+#> Dataset_3      3 3.609e-01
+#> Dataset_20    20 4.288e-01
+#> Dataset_14    14 4.831e-01
+#> Dataset_5      5 5.275e-01
+#> Dataset_19    19 5.648e-01
+#> Dataset_11    11 5.963e-01
+#> Dataset_10    10 6.234e-01
+#> Dataset_6      6 6.470e-01
+#> Dataset_18    18 6.677e-01
+#> Dataset_8      8 6.860e-01
+#> Dataset_2      2 7.023e-01
+#> Dataset_7      7 7.170e-01
+#> Dataset_16    16 7.303e-01
 ```

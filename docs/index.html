@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.33</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.34</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
 </h2>
 <p>This is a basic example, which tries to identify non-linear functions in a set of datasets. We use <code>order = 2</code> to apply the second order IWP, which has a base model S<sub>0</sub> being the space of linear functions.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/fashr/" class="external-link">fashr</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AgueroZZ/fashr/" class="external-link">fashr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Simulate five datasets</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
@@ -135,6 +135,7 @@ plot of chunk unnamed-chunk-4
 <code class="sourceCode R"><span><span class="va">fitted_samps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fash_fit</span>, index <span class="op">=</span> <span class="fl">1</span>, only.samples <span class="op">=</span> <span class="cn">TRUE</span>, M <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fitted_samps</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  num [1:50, 1:30] 3.36 3.13 2.96 2.78 2.57 ...</span></span></code></pre></div>
+<p>Visualize the predictions for the first dataset together with the data:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">t</span>, <span class="va">datasets</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span>, type <span class="op">=</span> <span class="st">"p"</span>, col <span class="op">=</span> <span class="st">"black"</span>, ylab <span class="op">=</span> <span class="st">"y"</span>, xlab <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">fitted</span><span class="op">$</span><span class="va">x</span>, <span class="va">fitted</span><span class="op">$</span><span class="va">mean</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
@@ -155,11 +156,29 @@ plot of chunk unnamed-chunk-8
 </p>
 </div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fdr_result</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ fdr_results:'data.frame': 20 obs. of  2 variables:</span></span>
-<span><span class="co">#&gt;   ..$ index: int [1:20] 4 13 17 12 1 15 9 3 20 14 ...</span></span>
-<span><span class="co">#&gt;   ..$ FDR  : num [1:20] 3.49e-16 4.28e-16 7.28e-12 3.22e-11 3.99e-09 ...</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fdr_result</span></span>
+<span><span class="co">#&gt; $fdr_results</span></span>
+<span><span class="co">#&gt;            index       FDR</span></span>
+<span><span class="co">#&gt; Dataset_4      4 3.492e-16</span></span>
+<span><span class="co">#&gt; Dataset_13    13 4.283e-16</span></span>
+<span><span class="co">#&gt; Dataset_17    17 7.280e-12</span></span>
+<span><span class="co">#&gt; Dataset_12    12 3.224e-11</span></span>
+<span><span class="co">#&gt; Dataset_1      1 3.988e-09</span></span>
+<span><span class="co">#&gt; Dataset_15    15 1.586e-01</span></span>
+<span><span class="co">#&gt; Dataset_9      9 2.741e-01</span></span>
+<span><span class="co">#&gt; Dataset_3      3 3.609e-01</span></span>
+<span><span class="co">#&gt; Dataset_20    20 4.288e-01</span></span>
+<span><span class="co">#&gt; Dataset_14    14 4.831e-01</span></span>
+<span><span class="co">#&gt; Dataset_5      5 5.275e-01</span></span>
+<span><span class="co">#&gt; Dataset_19    19 5.648e-01</span></span>
+<span><span class="co">#&gt; Dataset_11    11 5.963e-01</span></span>
+<span><span class="co">#&gt; Dataset_10    10 6.234e-01</span></span>
+<span><span class="co">#&gt; Dataset_6      6 6.470e-01</span></span>
+<span><span class="co">#&gt; Dataset_18    18 6.677e-01</span></span>
+<span><span class="co">#&gt; Dataset_8      8 6.860e-01</span></span>
+<span><span class="co">#&gt; Dataset_2      2 7.023e-01</span></span>
+<span><span class="co">#&gt; Dataset_7      7 7.170e-01</span></span>
+<span><span class="co">#&gt; Dataset_16    16 7.303e-01</span></span></code></pre></div>
 </div>
 </div>
   </div>

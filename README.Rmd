@@ -81,6 +81,8 @@ fitted_samps <- predict(fash_fit, index = 1, only.samples = TRUE, M = 30)
 str(fitted_samps)
 ```
 
+Visualize the predictions for the first dataset together with the data:
+
 ```{r, fig.height=4, fig.width=4}
 plot(datasets[[1]]$t, datasets[[1]]$y, type = "p", col = "black", ylab = "y", xlab = "t")
 lines(fitted$x, fitted$mean, col = "red")
@@ -95,5 +97,5 @@ fdr_result <- fdr_control(fash_fit, alpha = 0.1, plot = TRUE)
 ```
 
 ```{r}
-str(fdr_result)
+fdr_result
 ```
