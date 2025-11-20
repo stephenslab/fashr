@@ -1,30 +1,11 @@
-pandoc: '3.5'
-pkgdown: 2.1.1
-pkgdown_sha: ~
-
-template:
-  params:
-    mathjax: true
-
 navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Articles"
+    - text: "Vignettes"
       href: articles/index.html
     - text: "Functions"
       href: reference/index.html
   right:
     - text: "Source"
-      href: https://github.com/AgueroZZ/fashr
-
-articles:
-  - title: "Introduction"
-    contents:
-      - Introduction
-  - title: "Basics"
-    contents:
-      - Basics
-
-last_built: 2025-06-27T21:25Z
-
+      href: https://github.com/stephenslab/fashr

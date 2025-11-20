@@ -11,7 +11,7 @@ The goal of fashr is to implement the functional adaptive shrinkage
 through empirical Bayes.
 
 **Note:** The code to generate the results for the manuscript is
-[here](https://github.com/AgueroZZ/fashr-paper).
+[here](https://github.com/stephenslab/fashr-paper).
 
 ## Installation
 
@@ -20,7 +20,7 @@ You can install the development version of fashr from
 
 ``` r
 # install.packages("pak")
-pak::pak("AgueroZZ/fashr")
+pak::pak("stephenslab/fashr")
 ```
 
 ## Example

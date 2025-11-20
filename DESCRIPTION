@@ -1,8 +1,8 @@
 Encoding: UTF-8
 Type: Package
 Package: fashr
-Version: 0.1.30
-Date: 2025-07-14
+Version: 0.1.31
+Date: 2025-11-20
 Title: Flexible Functional Adaptive SHrinkage Through Empirical Bayes
 Authors@R: c(person("Ziang","Zhang",role=c("aut","cre"),
 		    email = "aguero.zhang@gmail.com"),
@@ -10,8 +10,8 @@ Authors@R: c(person("Ziang","Zhang",role=c("aut","cre"),
              person("Matthew","Stephens",role="aut"))
 Description: Implements an empirical Bayes approach to 
     functional adaptive shrinkage.
-URL: https://github.com/AgueroZZ/fashr/
-BugReports: https://github.com/AgueroZZ/fashr/issues
+URL: https://github.com/stephenslab/fashr/
+BugReports: https://github.com/stephenslab/fashr/issues
 License: GPL (>= 3)
 SystemRequirements: GNU make
 Imports:
@@ -32,8 +32,6 @@ Suggests:
     knitr,
     rmarkdown
 LinkingTo: TMB
-LazyData: true
-LazyDataCompression: xz
 NeedsCompilation: yes
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
