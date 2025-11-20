@@ -25,7 +25,7 @@ Type objective_function<Type>::operator() ()
   // Log likelihood
   Type ll = 0;
   ll = sum(dpois(y, exp(eta), TRUE));
-  REPORT(ll);
+  // REPORT(ll);
   
   // Log prior on W
   Type lpW = 0;
@@ -37,7 +37,7 @@ Type objective_function<Type>::operator() ()
     lpW += 0.5 * logdet2; // for fixed effect
   }
 
-  REPORT(lpW);
+  // REPORT(lpW);
   
   // Final result!
   Type logpost = -1 * (ll + lpW);

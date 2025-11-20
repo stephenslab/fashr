@@ -1,52 +1,150 @@
-<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>/404.html</loc></url>
-<url><loc>/articles/Basics.html</loc></url>
-<url><loc>/articles/Introduction.html</loc></url>
-<url><loc>/articles/index.html</loc></url>
-<url><loc>/authors.html</loc></url>
-<url><loc>/index.html</loc></url>
-<url><loc>/reference/BF_compute.html</loc></url>
-<url><loc>/reference/BF_control.html</loc></url>
-<url><loc>/reference/BF_update.html</loc></url>
-<url><loc>/reference/collapse_L.html</loc></url>
-<url><loc>/reference/compute_L_gaussian_helper.html</loc></url>
-<url><loc>/reference/compute_L_gaussian_helper_seq.html</loc></url>
-<url><loc>/reference/compute_L_poisson_helper.html</loc></url>
-<url><loc>/reference/compute_L_poisson_helper_seq.html</loc></url>
-<url><loc>/reference/compute_lfsr_sampling.html</loc></url>
-<url><loc>/reference/compute_lfsr_summary.html</loc></url>
-<url><loc>/reference/compute_marginal_mean_var.html</loc></url>
-<url><loc>/reference/compute_marginal_mean_var_once.html</loc></url>
-<url><loc>/reference/compute_posterior_sign_prob.html</loc></url>
-<url><loc>/reference/compute_weights_precision_helper.html</loc></url>
-<url><loc>/reference/dummy.html</loc></url>
-<url><loc>/reference/fash.html</loc></url>
-<url><loc>/reference/fash_L_compute.html</loc></url>
-<url><loc>/reference/fash_bma_sampling.html</loc></url>
-<url><loc>/reference/fash_eb_est.html</loc></url>
-<url><loc>/reference/fash_fit_once.html</loc></url>
-<url><loc>/reference/fash_post_ordering.html</loc></url>
-<url><loc>/reference/fash_prior_posterior_update.html</loc></url>
-<url><loc>/reference/fash_set_data.html</loc></url>
-<url><loc>/reference/fash_set_tmbdat.html</loc></url>
-<url><loc>/reference/fash_structure_plot.html</loc></url>
-<url><loc>/reference/fdr_control.html</loc></url>
-<url><loc>/reference/global_poly_helper.html</loc></url>
-<url><loc>/reference/index.html</loc></url>
-<url><loc>/reference/local_poly_helper.html</loc></url>
-<url><loc>/reference/min_lfsr_sampling.html</loc></url>
-<url><loc>/reference/min_lfsr_summary.html</loc></url>
-<url><loc>/reference/plot.fash.html</loc></url>
-<url><loc>/reference/plot_heatmap 2.html</loc></url>
-<url><loc>/reference/plot_heatmap.html</loc></url>
-<url><loc>/reference/predict.fash.html</loc></url>
-<url><loc>/reference/print.fash.html</loc></url>
-<url><loc>/reference/simulate_data.html</loc></url>
-<url><loc>/reference/simulate_linear_function.html</loc></url>
-<url><loc>/reference/simulate_nondynamic_function.html</loc></url>
-<url><loc>/reference/simulate_nonlinear_function.html</loc></url>
-<url><loc>/reference/simulate_process.html</loc></url>
-<url><loc>/reference/simulate_quadratic_function.html</loc></url>
-<url><loc>/reference/testing_functional.html</loc></url>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>/404.html</loc>
+  </url>
+  <url>
+    <loc>/articles/Basics.html</loc>
+  </url>
+  <url>
+    <loc>/articles/Introduction.html</loc>
+  </url>
+  <url>
+    <loc>/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>/authors.html</loc>
+  </url>
+  <url>
+    <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/BF_compute.html</loc>
+  </url>
+  <url>
+    <loc>/reference/BF_control.html</loc>
+  </url>
+  <url>
+    <loc>/reference/BF_update.html</loc>
+  </url>
+  <url>
+    <loc>/reference/collapse_L.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_L_gaussian_helper.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_L_gaussian_helper_seq.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_L_poisson_helper.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_L_poisson_helper_seq.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_lfsr_sampling.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_lfsr_summary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_marginal_mean_var.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_marginal_mean_var_once.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_posterior_sign_prob.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compute_weights_precision_helper.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dummy.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_L_compute.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_bma_sampling.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_eb_est.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_fit_once.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_post_ordering.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_prior_posterior_update.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_set_data.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_set_tmbdat.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fash_structure_plot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fdr_control.html</loc>
+  </url>
+  <url>
+    <loc>/reference/global_poly_helper.html</loc>
+  </url>
+  <url>
+    <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/local_poly_helper.html</loc>
+  </url>
+  <url>
+    <loc>/reference/min_lfsr_sampling.html</loc>
+  </url>
+  <url>
+    <loc>/reference/min_lfsr_summary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot.fash.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_heatmap 2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_heatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/predict.fash.html</loc>
+  </url>
+  <url>
+    <loc>/reference/print.fash.html</loc>
+  </url>
+  <url>
+    <loc>/reference/simulate_data.html</loc>
+  </url>
+  <url>
+    <loc>/reference/simulate_linear_function.html</loc>
+  </url>
+  <url>
+    <loc>/reference/simulate_nondynamic_function.html</loc>
+  </url>
+  <url>
+    <loc>/reference/simulate_nonlinear_function.html</loc>
+  </url>
+  <url>
+    <loc>/reference/simulate_process.html</loc>
+  </url>
+  <url>
+    <loc>/reference/simulate_quadratic_function.html</loc>
+  </url>
+  <url>
+    <loc>/reference/testing_functional.html</loc>
+  </url>
 </urlset>
-
