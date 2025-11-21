@@ -1,12 +1,12 @@
 Encoding: UTF-8
 Type: Package
 Package: fashr
-Version: 0.1.34
-Date: 2025-11-20
+Version: 0.1.35
+Date: 2025-11-21
 Title: Flexible Functional Adaptive SHrinkage Through Empirical Bayes
 Authors@R: c(person("Ziang","Zhang",role=c("aut","cre"),
 		    email = "aguero.zhang@gmail.com"),
-	     person("Peter","Carbonetto",role=c("aut")),
+	     person("Peter","Carbonetto",role="aut"),
              person("Matthew","Stephens",role="aut"))
 Description: Implements an empirical Bayes approach to 
     functional adaptive shrinkage.
@@ -18,12 +18,14 @@ Imports:
     Matrix,
     methods,
     graphics,
+    grDevices,
     stats,
     TMB,
     parallel,
     numDeriv,
     LaplacesDemon,
     mixsqp,
+    rlang,
     reshape2,
     ggplot2,
     cowplot,

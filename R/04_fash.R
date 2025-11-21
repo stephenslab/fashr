@@ -403,6 +403,11 @@ plot.fash <- function(x,
 #' and does not return a value.
 #'
 #' @keywords internal
+#'
+#' @importFrom graphics lines
+#' @importFrom graphics polygon
+#' @importFrom grDevices rgb
+#' 
 plot_function <- function(fash_obj, selected_unit, smooth_var = NULL, ...) {
   # Extract dataset
   dataset <- fash_obj$fash_data$data_list[[selected_unit]]
@@ -1233,7 +1238,17 @@ simulate_fash_prior <- function(fash_obj,
 #'
 #' @return A \code{ggplot} object.
 #'
+#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_line
+#' @importFrom ggplot2 geom_histogram
+#' @importFrom ggplot2 coord_cartesian
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 theme_minimal
+#' 
 #' @export
+#' 
 visualize_fash_prior <- function(fash_obj,
                                  plot_type = c("sample_path", "psd"),
                                  M = 100,
@@ -1267,10 +1282,8 @@ visualize_fash_prior <- function(fash_obj,
       psd       = factor(round(rep(psd_vec, each = length(x_grid)), 4))
     )
 
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y,
-                                          group = sample_id,
-                                          color = psd,
-                                          linetype = psd)) +
+    p <- ggplot(df, aes(x = .data$x, y = .data$y, group = .data$sample_id,
+                        color = .data$psd, linetype = .data$psd)) +
       ggplot2::geom_line(alpha = 0.6) +
       ggplot2::labs(
         x = "Condition",
