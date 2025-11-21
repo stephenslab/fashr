@@ -6,9 +6,10 @@
 \usage{
 \method{plot}{fash}(
   x,
-  plot_type = c("structure", "heatmap"),
+  plot_type = c("heatmap", "structure", "function"),
   ordering = NULL,
   discrete = FALSE,
+  selected_unit = NULL,
   ...
 )
 }
@@ -18,7 +19,8 @@
 \item{plot_type}{A character string specifying the type of plot to generate.
 One of:
 - \code{"heatmap"}: Bubble/heatmap plot of posterior weights (default).
-- \code{"structure"}: Structure plot of mixture components.}
+- \code{"structure"}: Structure plot of mixture components.
+- \code{"function"}: Plot fitted effect function for a selected unit.}
 
 \item{ordering}{A character string specifying the method for reordering datasets in the structure plot.
   Only used if \code{plot_type = "structure"}.
@@ -28,9 +30,9 @@ One of:
   - \code{NULL}: No reordering (default).}
 
 \item{discrete}{A logical value. If \code{TRUE}, treats PSD values as discrete categories with distinct colors
-in the structure plot. Ignored if \code{plot_type = "heatmap"}.}
+in the structure plot. Ignored if \code{plot_type = "heatmap"} or \code{"function"}.}
 
-\item{...}{Additional arguments passed to \code{plot_heatmap} or \code{fash_structure_plot}.}
+\item{...}{Additional arguments passed to \code{plot_heatmap}, \code{fash_structure_plot} or \code{plot_function},}
 }
 \value{
 A plot object (typically a \code{ggplot}).

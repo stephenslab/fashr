@@ -69,7 +69,7 @@ simulate_nonlinear_function <- function(n_basis = 20, sd_function = 1, sd_poly =
     x_range <- c(0, 16)
   }
 
-  # Define the range and knots for the B-spline basis
+  # Define the range and knots for the spline basis
   x_min <- x_range[1]
   x_max <- x_range[2]
 
@@ -85,7 +85,7 @@ simulate_nonlinear_function <- function(n_basis = 20, sd_function = 1, sd_poly =
 
   # Return a function that evaluates the spline at new x values
   function(x_new) {
-    # Create the B-spline basis for the new x values using the predefined knots
+    # Create the spline basis for the new x values using the predefined knots
     spline_new <- fashr:::local_poly_helper(knots = knots, refined_x = x_new, p = p)
     x_new_design <- fashr:::global_poly_helper(x = x_new, p = p)
     # Return the function

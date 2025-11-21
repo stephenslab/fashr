@@ -221,11 +221,28 @@ Let's take a look at the estimated prior $\hat{g}$:
 fash_fit$prior_weights
 ```
 
+We can also visualize the fitted prior in FASH by looking at some sample paths. 
+As the baseline component is often diffuse, we can visualize the prior sample paths under two different constraints: (1) `initial` constraint, which fixes each sample path (and its derivatives) to have zero initial values; (2) `orthogonal` constraint, which forces each sample path to be orthogonal to the null space $S_0$.
+
+```{r, fig.height=4.5, fig.width=3.5}
+visualize_fash_prior(fash_fit, constraints = "initial")
+visualize_fash_prior(fash_fit, constraints = "orthogonal")
+```
+
+
 We can take a look at their posterior weights in each GP component:
 
 ```{r, fig.height=4.5, fig.width=3.5}
 plot(fash_fit, plot_type = "heatmap", selected_indices = c(1:5, 55:60, 95:100))
 ```
+
+
+Note that the `selected_indices` argument allows us to specify the names of the eQTLs to be visualized:
+
+```{r, fig.height=4.5, fig.width=3.5}
+plot(fash_fit, plot_type = "heatmap", selected_indices = c("A1", "B1", "C1"))
+```
+
 
 Besides the heatmap plot, we could also visualize the result using a
 structure plot:

@@ -4,23 +4,38 @@
 \alias{fdr_control}
 \title{Perform False Discovery Rate (FDR) Control}
 \usage{
-fdr_control(fash_obj, alpha = 0.05, plot = FALSE)
+fdr_control(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE)
 }
 \arguments{
-\item{fash_obj}{A \code{fash} object containing the results of the FASH pipeline, including \code{lfdr}.}
+\item{fash_obj}{A \code{fash} object containing the results of the FASH pipeline,
+including the vector \code{lfdr}.}
 
-\item{alpha}{A numeric value specifying the significance level for hypothesis testing.}
+\item{alpha}{A numeric value specifying the FDR threshold (significance level)
+used to declare discoveries. Default is \code{0.05}.}
 
-\item{plot}{A logical value. If \code{TRUE}, plots the sorted FDR values with a horizontal line at the \code{alpha} level.}
+\item{plot}{A logical value. If \code{TRUE}, plots the cumulative FDR values
+against the rank of units sorted by lfdr, with a horizontal line at the
+\code{alpha} level. Default is \code{FALSE}.}
+
+\item{sort}{A logical value. If \code{TRUE}, returns the FDR results sorted by increasing lfdr.}
 }
 \value{
-A list containing:
-
-      - \code{fdr_results}: A data frame with columns:
-
-      - \code{index}: The original dataset index.
-
-      - \code{FDR}: The false discovery rate for each dataset.
+A list with the following components:
+\describe{
+  \item{fdr_results}{A data frame with one row per unit,
+    containing:
+    \itemize{
+      \item \code{rank}: Rank of the unit after sorting by lfdr (1 = smallest lfdr).
+      \item \code{index}: Original index of the unit in \code{lfdr}.
+      \item \code{lfdr}: The sorted local false discovery rate values.
+      \item \code{FDR}: The cumulative FDR at each rank, computed as
+        the running mean of the sorted lfdr values.
+    }}
+  \item{message}{A character string summarizing how many units are significant
+    at the chosen \code{alpha} level and the total number of units tested.}
+  \item{significant_units}{A vector of indices (or names, if \code{lfdr} is named)
+    corresponding to units with cumulative FDR less than or equal to \code{alpha}.}
+}
 }
 \description{
 This function performs hypothesis testing by controlling the False Discovery Rate (FDR) based on the

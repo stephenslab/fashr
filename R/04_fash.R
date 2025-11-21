@@ -175,17 +175,31 @@ fash <- function(Y, smooth_var, offset = 0, S = NULL,
 #' This function performs hypothesis testing by controlling the False Discovery Rate (FDR) based on the
 #' local false discovery rate (lfdr) stored in the \code{fash} object.
 #'
-#' @param fash_obj A \code{fash} object containing the results of the FASH pipeline, including \code{lfdr}.
-#' @param alpha A numeric value specifying the significance level for hypothesis testing.
-#' @param plot A logical value. If \code{TRUE}, plots the sorted FDR values with a horizontal line at the \code{alpha} level.
+#' @param fash_obj A \code{fash} object containing the results of the FASH pipeline,
+#'   including the vector \code{lfdr}.
+#' @param alpha A numeric value specifying the FDR threshold (significance level)
+#'   used to declare discoveries. Default is \code{0.05}.
+#' @param plot A logical value. If \code{TRUE}, plots the cumulative FDR values
+#'   against the rank of units sorted by lfdr, with a horizontal line at the
+#'   \code{alpha} level. Default is \code{FALSE}.
+#' @param sort A logical value. If \code{TRUE}, returns the FDR results sorted by increasing lfdr.
 #'
-#' @return A list containing:
-#'
-#'       - \code{fdr_results}: A data frame with columns:
-#'
-#'       - \code{index}: The original dataset index.
-#'
-#'       - \code{FDR}: The false discovery rate for each dataset.
+#' @return A list with the following components:
+#' \describe{
+#'   \item{fdr_results}{A data frame with one row per unit,
+#'     containing:
+#'     \itemize{
+#'       \item \code{rank}: Rank of the unit after sorting by lfdr (1 = smallest lfdr).
+#'       \item \code{index}: Original index of the unit in \code{lfdr}.
+#'       \item \code{lfdr}: The sorted local false discovery rate values.
+#'       \item \code{FDR}: The cumulative FDR at each rank, computed as
+#'         the running mean of the sorted lfdr values.
+#'     }}
+#'   \item{message}{A character string summarizing how many units are significant
+#'     at the chosen \code{alpha} level and the total number of units tested.}
+#'   \item{significant_units}{A vector of indices (or names, if \code{lfdr} is named)
+#'     corresponding to units with cumulative FDR less than or equal to \code{alpha}.}
+#' }
 #'
 #' @examples
 #' # Example usage
@@ -202,49 +216,69 @@ fash <- function(Y, smooth_var, offset = 0, S = NULL,
 #' fdr_control(fash_obj, alpha = 0.05, plot = TRUE)
 #'
 #' @export
-fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE) {
-  # Extract the local false discovery rates (lfdr)
+fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
+  # Extract lfdr
   lfdr <- fash_obj$lfdr
   if (is.null(lfdr)) {
     stop("The `fash` object does not contain local false discovery rates (lfdr).")
   }
 
-  # Sort lfdr and compute the FDR for each dataset
+  # Sort lfdr
   n <- length(lfdr)
   lfdr_sorted <- sort(lfdr, index.return = TRUE)
   cumulative_lfdr <- cumsum(lfdr_sorted$x) / seq_len(n)
 
-  # Identify significant datasets based on alpha
-  significant <- cumulative_lfdr <= alpha
-  significant_count <- sum(significant)
-  total_count <- n
+  # Identify significant datasets
+  significant <- which(cumulative_lfdr <= alpha)
+  significant_count <- length(significant)
 
-  # Create results data frame
+  # Prepare results (sorted table)
   fdr_results <- data.frame(
+    rank = seq_len(n),
     index = lfdr_sorted$ix,
-    FDR = cumulative_lfdr
+    lfdr = lfdr_sorted$x,
+    FDR  = cumulative_lfdr
   )
+
+  # If sort is FALSE, reorder fdr_results to original order
+  if (!sort) {
+    fdr_results <- fdr_results[order(fdr_results$index), ]
+  }
+
+  # Prepare significant units (in original indices or names)
+  significant_units <- lfdr_sorted$ix[significant]
+  if (!is.null(names(lfdr))) {
+    significant_units <- names(lfdr)[significant_units]
+  }
 
   # Display message
   message <- sprintf(
     "%d datasets are significant at alpha level %.2f. Total datasets tested: %d.",
-    significant_count, alpha, total_count
+    significant_count, alpha, n
   )
   cat(message, "\n")
 
-  # Plot the FDR values if plot = TRUE
+  # Plot
   if (plot) {
     plot(
       1:n, cumulative_lfdr, type = "b", pch = 19, col = "blue",
       xlab = "Dataset Rank (Sorted by LFDR)", ylab = "Cumulative FDR",
       main = sprintf("FDR Control with Alpha = %.2f", alpha)
     )
-    abline(h = alpha, col = "red", lty = 2)  # Horizontal line at alpha
-    legend("topright", legend = c("FDR Values", "Alpha Level"), col = c("blue", "red"), lty = c(1, 2), pch = c(19, NA))
+    abline(h = alpha, col = "red", lty = 2)
+    legend(
+      "topright",
+      legend = c("FDR Values", "Alpha Level"),
+      col = c("blue", "red"), lty = c(1, 2), pch = c(19, NA)
+    )
   }
 
   # Return results
-  return(list(fdr_results = fdr_results))
+  list(
+    fdr_results      = fdr_results,
+    message          = message,
+    significant_units = significant_units
+  )
 }
 
 
@@ -258,6 +292,7 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE) {
 #'   One of:
 #'   - \code{"heatmap"}: Bubble/heatmap plot of posterior weights (default).
 #'   - \code{"structure"}: Structure plot of mixture components.
+#'   - \code{"function"}: Plot fitted effect function for a selected unit.
 #' @param ordering A character string specifying the method for reordering datasets in the structure plot.
 #'   Only used if \code{plot_type = "structure"}.
 #'
@@ -266,8 +301,8 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE) {
 #'   - \code{NULL}: No reordering (default).
 #'
 #' @param discrete A logical value. If \code{TRUE}, treats PSD values as discrete categories with distinct colors
-#'                 in the structure plot. Ignored if \code{plot_type = "heatmap"}.
-#' @param ... Additional arguments passed to \code{plot_heatmap} or \code{fash_structure_plot}.
+#'                 in the structure plot. Ignored if \code{plot_type = "heatmap"} or \code{"function"}.
+#' @param ... Additional arguments passed to \code{plot_heatmap}, \code{fash_structure_plot} or \code{plot_function},
 #'
 #' @return A plot object (typically a \code{ggplot}).
 #'
@@ -288,9 +323,10 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE) {
 #'
 #' @export
 plot.fash <- function(x,
-                      plot_type = c("structure", "heatmap"),
+                      plot_type = c("heatmap", "structure", "function"),
                       ordering = NULL,
                       discrete = FALSE,
+                      selected_unit = NULL,
                       ...) {
   # Match the plot type
   plot_type <- match.arg(plot_type)
@@ -323,13 +359,88 @@ plot.fash <- function(x,
     )
   }
 
+  else if (plot_type == "function") {
+    if (is.null(selected_unit)) {
+      stop("Please provide 'selected_unit' for function plot.")
+    }
+    return(
+      plot_function(
+        fash_obj = x,
+        selected_unit = selected_unit,
+        ...
+      )
+    )
+  }
+
   else {
-    stop("Invalid plot_type. Must be either 'heatmap' or 'structure'.")
+    stop("Invalid plot_type. Must be either 'heatmap', 'structure', or 'function'.")
   }
 }
 
 
+#' Plot Fitted Effect Function for a Selected Unit
+#'
+#' This internal helper function generates a plot for a single unit
+#' in a fitted \code{fash} object. It overlays the observed data with the
+#' smoothed posterior mean function and its uncertainty band.
+#'
+#' @param fash_obj A \code{fash} object produced by the \code{fash()} pipeline.
+#' @param selected_unit An integer specifying which unit (dataset index)
+#'   to visualize.
+#' @param smooth_var Optional numeric vector giving the values of the
+#'   smoothing variable at which the effect function should be evaluated.
+#'   If \code{NULL}, 100 equally spaced points spanning the observed
+#'   \code{x}-range of the selected unit are generated automatically.
+#' @param ... Additional arguments passed to the underlying \code{plot()} call.
+#'
+#' @details
+#' The function extracts the observed data for the selected unit and evaluates
+#' the fitted effect function using \code{predict()}. The resulting mean
+#' function and its 95\% credible band are plotted together with the raw data.
+#'
+#' @return
+#' This function is called for generating a plot
+#' and does not return a value.
+#'
+#' @keywords internal
+plot_function <- function(fash_obj, selected_unit, smooth_var = NULL, ...) {
+  # Extract dataset
+  dataset <- fash_obj$fash_data$data_list[[selected_unit]]
 
+  # If smooth_var is NULL, generate a sequence spanning the observed x-range
+  if (is.null(smooth_var)) {
+    smooth_var <- seq(min(dataset$x), max(dataset$x), length.out = 100)
+  }
+
+  # Get fitted effect
+  fitted_beta_new <- predict(
+    fash_obj,
+    index = selected_unit,
+    smooth_var = smooth_var
+  )
+
+  # Plot observed data
+  plot(
+    dataset$x, dataset$y,
+    type = "p", col = "black", lwd = 2,
+    xlab = "Condition", ylab = "Effect Size",
+    main = paste("Unit", selected_unit),
+    ...
+  )
+
+  # Add posterior mean curve
+  lines(
+    fitted_beta_new$x, fitted_beta_new$mean,
+    col = "red", lwd = 2
+  )
+
+  # Add credible interval band
+  polygon(
+    c(fitted_beta_new$x, rev(fitted_beta_new$x)),
+    c(fitted_beta_new$lower, rev(fitted_beta_new$upper)),
+    col = rgb(1, 0, 0, 0.2), border = NA
+  )
+}
 
 
 
@@ -398,8 +509,11 @@ predict.fash <- function (object, index = 1, smooth_var = NULL, only.samples = F
   if (!inherits(object, "fash")) {
     stop("Input must be a `fash` object.")
   }
-  if (index < 1 || index > length(object$posterior_weights)) {
-    stop("Index is out of range for the datasets in the `fash` object.")
+
+  if(is.numeric(index)){
+    if (index < 1 || index > length(object$posterior_weights)) {
+      stop("Index is out of range for the datasets in the `fash` object.")
+    }
   }
 
   # Extract dataset-specific components
@@ -792,6 +906,409 @@ plot_heatmap <- function(object,
   return(p)
 }
 
+
+#' Simulate functions from an integrated Wiener process prior
+#'
+#' This internal helper simulates sample paths from an integrated Wiener process
+#' (IWP)–type prior using a spline basis plus a low-order global polynomial
+#' trend. The spline coefficients are drawn from a multivariate normal
+#' distribution with a precision matrix constructed from the knot locations,
+#' scaled to achieve a target predictive standard deviation (PSD). The global
+#' polynomial coefficients are drawn independently from a normal prior.
+#'
+#' @param n_samps Integer; number of function samples to draw.
+#' @param n_basis Integer; number of spline basis functions (i.e., number of
+#'   knots). Must be at least 3.
+#' @param psd Numeric; target predictive standard deviation (PSD) for the IWP
+#'   component, on the scale implied by \code{pred_step}.
+#' @param sd_poly Numeric; standard deviation for the global polynomial
+#'   coefficients.
+#' @param p Integer; order of the integrated Wiener process / local polynomial.
+#' @param pred_step Numeric; prediction step size used in the PSD scaling
+#'   formula.
+#' @param x_range Numeric vector of length 2 giving the range of the input
+#'   domain \code{[x_min, x_max]}. If \code{NULL}, defaults to \code{c(0, 10)}.
+#'   Used to construct the knot locations.
+#' @param x_new Optional numeric vector giving the evaluation points at which
+#'   the sampled functions should be returned. If \code{NULL}, 100 equally
+#'   spaced points over \code{x_range} are used.
+#'
+#' @details
+#' The function constructs a spline basis over \code{x_range} using
+#' \code{n_basis} knots, and a global polynomial design of order \code{p} over
+#' \code{x_new}. Spline coefficients are sampled from a multivariate normal
+#' distribution with precision matrix
+#' \deqn{Q = \frac{1}{\sigma^2} Q_{\text{IWP}}(knots),}
+#' where \code{Q_IWP} is computed by \code{compute_weights_precision_helper()}
+#' and \code{sigma} is chosen so that the resulting process has predictive
+#' standard deviation approximately equal to \code{psd} at step size
+#' \code{pred_step}. The global polynomial coefficients are sampled
+#' independently from \eqn{N(0, \text{sd\_poly}^2)}.
+#'
+#' @return A list with elements:
+#' \describe{
+#'   \item{samples}{A numeric matrix of dimension
+#'     \code{length(x_new) × n_samps} containing the simulated function values.
+#'     Each column corresponds to one function sample, and each row corresponds
+#'     to an evaluation point in \code{x_new}.}
+#'   \item{x_new}{The numeric vector of evaluation points at which the
+#'     functions are simulated.}
+#' }
+#'
+#' @examples
+#' \dontrun{
+#'   sim <- simulate_IWP(n_samps = 5, n_basis = 20, psd = 1, p = 2)
+#'   # Each column is a sample
+#'   matplot(sim$x_new, sim$samples, type = "l", lty = 1,
+#'           xlab = "x", ylab = "Sampled function")
+#' }
+#'
+#' @keywords internal
+simulate_IWP <- function(n_samps = 1,
+                         n_basis = 20,
+                         psd = 1,
+                         sd_poly = 0.1,
+                         p = 1,
+                         pred_step = 1,
+                         x_range = NULL,
+                         x_new = NULL) {
+  if (n_basis < 3L) {
+    stop("n_basis must be greater than 3.")
+  }
+  if (p < 1L) {
+    stop("p must be a positive integer.")
+  }
+
+  if (is.null(x_range)) {
+    x_range <- c(0, 10)
+  }
+
+  if (is.null(x_new)) {
+    x_new <- seq(x_range[1], x_range[2], length.out = 100)
+  }
+
+  x_min <- x_range[1]
+  x_max <- x_range[2]
+
+  # Optional: warn if extrapolating outside the knot range
+  if (any(x_new < x_min | x_new > x_max)) {
+    warning("Some x_new values lie outside x_range; extrapolation may be unreliable.")
+  }
+
+  # Knots for the spline basis
+  knots <- seq(x_min, x_max, length.out = n_basis)
+
+  spline_new   <- fashr:::local_poly_helper(knots = knots, refined_x = x_new, p = p)
+  x_new_design <- fashr:::global_poly_helper(x = x_new, p = p)
+
+  if(psd > 0){
+    # Precision for spline weights (IWP part), scaled to match target PSD
+    sd_function <- psd / sqrt(
+      (pred_step^((2 * p) - 1)) /
+        (((2 * p) - 1) * (factorial(p - 1)^2))
+    )
+
+    prec_mat <- (1 / sd_function^2) * fashr:::compute_weights_precision_helper(knots)
+
+    # Basis weights for the IWP component
+    weights <- LaplacesDemon::rmvnp(
+      n    = n_samps,
+      mu   = rep(0, ncol(prec_mat)),
+      Omega = prec_mat
+    )
+  }
+  else{
+    weights <- matrix(0, nrow = n_samps, ncol = ncol(spline_new))
+  }
+
+  # Global polynomial component
+  beta <- rnorm(n = p * n_samps, mean = 0, sd = sd_poly)
+  beta_matrix <- matrix(beta, nrow = n_samps, ncol = p, byrow = TRUE)
+
+
+  # Combine global polynomial and IWP components
+  samps <- beta_matrix %*% t(x_new_design) + weights %*% t(spline_new)
+  # Transpose so that columns are samples and rows are x_new
+  samps <- t(samps)
+
+  list(
+    samples = samps,
+    x_new   = x_new
+  )
+}
+
+
+
+#' Simulate sample paths from the FASH prior
+#'
+#' This function simulates sample paths from the prior over effect functions
+#' implied by a fitted \code{fash} object. The prior is treated as a finite
+#' mixture over predictive standard deviation (PSD) values stored in
+#' \code{fash_obj$prior_weights}. Each sample path is drawn from an integrated
+#' Wiener process (IWP) prior plus a global polynomial trend.
+#'
+#' The function provides optional constraints on the global polynomial
+#' component:
+#' \itemize{
+#'   \item \code{"none"}: use the polynomial variance from the fitted model (default)
+#'   \item \code{"initial"}: force the polynomial part to be identically zero
+#'         (equivalent to letting betaprec = Inf)
+#'   \item \code{"orthogonal"}: regress out the polynomial trend from each sample
+#'         so that the resulting sample path is orthogonal to all global
+#'         polynomial basis functions
+#' }
+#'
+#' @param fash_obj A fitted \code{fash} object containing:
+#'   \itemize{
+#'     \item \code{prior_weights}: a data frame with columns \code{psd} and \code{prior_weight};
+#'     \item \code{settings}: a list with elements \code{num_basis}, \code{order},
+#'           \code{pred_step}, \code{betaprec}.
+#'   }
+#' @param M Integer; total number of prior samples to draw.
+#' @param constraints Character; one of:
+#'   \code{"none"}, \code{"initial"}, \code{"orthogonal"}.
+#' @param x_range Optional numeric vector of length 2 defining the simulation
+#'   domain. If missing, inferred from the data.
+#' @param x_new Optional numeric vector giving evaluation points for the samples.
+#'
+#' @return A list containing:
+#' \describe{
+#'   \item{samples}{A matrix of size \code{length(x_new) × M}; each column is a sampled function.}
+#'   \item{x_new}{Evaluation grid.}
+#'   \item{psd}{Length-\code{M} vector giving the PSD used for each sample.}
+#'   \item{component}{Length-\code{M} vector giving mixture component index used.}
+#'   \item{prior_weights}{Original prior weights.}
+#'   \item{settings}{Settings used in the simulation.}
+#' }
+#'
+#' @export
+simulate_fash_prior <- function(fash_obj,
+                                M = 100,
+                                constraints = c("none", "initial", "orthogonal"),
+                                x_range = NULL,
+                                x_new = NULL) {
+
+  constraints <- match.arg(constraints)
+
+  # ------------------------------------------------------------
+  # 1. Extract prior weights
+  # ------------------------------------------------------------
+  prior_df <- fash_obj$prior_weights
+  if (is.null(prior_df)) stop("`fash_obj$prior_weights` is NULL.")
+  if (!all(c("psd", "prior_weight") %in% names(prior_df)))
+    stop("`prior_weights` must contain columns `psd` and `prior_weight`.")
+
+  # normalize weights
+  w <- prior_df$prior_weight
+  w <- w / sum(w)
+  K <- nrow(prior_df)
+
+  # ------------------------------------------------------------
+  # 2. Extract settings
+  # ------------------------------------------------------------
+  settings <- fash_obj$settings
+  if (is.null(settings))
+    stop("`fash_obj$settings` is NULL.")
+
+  n_basis   <- settings$num_basis
+  p         <- settings$order
+  pred_step <- settings$pred_step
+  betaprec  <- settings$betaprec
+
+  # constraints = "initial" → polynomial ≡ 0
+  if (constraints == "initial") {
+    betaprec <- Inf
+  }
+
+  # compute sd_poly
+  sd_poly <- if (betaprec > 0) 1 / sqrt(betaprec) else 0
+
+  # ------------------------------------------------------------
+  # 3. Infer x_range if needed
+  # ------------------------------------------------------------
+  if (is.null(x_range) && is.null(x_new)) {
+    data_list <- fash_obj$fash_data$data_list
+    if (!is.null(data_list) && length(data_list) > 0L)
+      x_range <- range(data_list[[1]]$x)
+  }
+
+  # ------------------------------------------------------------
+  # 4. Mixture sampling
+  # ------------------------------------------------------------
+  comp_idx <- sample.int(K, size = M, replace = TRUE, prob = w)
+  uniq_comp <- sort(unique(comp_idx))
+
+  x_new_common <- NULL
+  samples_mat  <- NULL
+
+  # ------------------------------------------------------------
+  # 5. Generate samples component-by-component
+  # ------------------------------------------------------------
+  for (u in uniq_comp) {
+    n_u <- sum(comp_idx == u)
+
+    sim_u <- simulate_IWP(
+      n_samps   = n_u,
+      n_basis   = n_basis,
+      psd       = prior_df$psd[u],
+      sd_poly   = sd_poly,
+      p         = p,
+      pred_step = pred_step,
+      x_range   = x_range,
+      x_new     = x_new
+    )
+
+    if (is.null(x_new_common)) {
+      x_new_common <- sim_u$x_new
+      samples_mat  <- matrix(NA_real_,
+                             nrow = length(x_new_common),
+                             ncol = M)
+    }
+
+    samples_mat[, comp_idx == u] <- sim_u$samples
+  }
+
+  # ------------------------------------------------------------
+  # 6. constraints = "orthogonal":
+  #    regress out polynomial component from each sample
+  # ------------------------------------------------------------
+  if (constraints == "orthogonal") {
+    X_poly <- fashr:::global_poly_helper(x = x_new_common, p = p)  # n × p
+    XtX <- crossprod(X_poly)
+    XtX_inv <- solve(XtX)
+    Xt <- t(X_poly)
+
+    for (j in seq_len(M)) {
+      f_j <- samples_mat[, j]
+      beta_hat <- XtX_inv %*% (Xt %*% f_j)
+      fitted_poly <- X_poly %*% beta_hat
+      samples_mat[, j] <- f_j - fitted_poly
+    }
+  }
+
+  list(
+    samples       = samples_mat,
+    x_new         = x_new_common,
+    psd           = prior_df$psd[comp_idx],
+    component     = comp_idx,
+    prior_weights = prior_df,
+    settings      = settings
+  )
+}
+
+
+
+
+
+
+#' Visualize the FASH prior over effect functions
+#'
+#' This function visualizes the fitted fash prior in the
+#' \code{fash} object, using simulation via \code{simulate_fash_prior()}.
+#' Two types of visualizations are supported:
+#' \itemize{
+#'   \item \code{"sample_path"}: plot individual sample paths from the prior,
+#'         with different PSD mixture components shown in different colors and
+#'         line types.
+#'   \item \code{"psd"}: plot a histogram of the PSD values corresponding to
+#'         the \code{M} prior samples drawn from the mixture.
+#' }
+#'
+#' @param fash_obj A fitted \code{fash} object, passed to
+#'   \code{simulate_fash_prior()}.
+#' @param plot_type Character string specifying the type of plot:
+#'   \code{"sample_path"} or \code{"psd"}.
+#' @param M Integer; number of prior samples to draw via
+#'   \code{simulate_fash_prior()}. For \code{plot_type = "sample_path"}, this is
+#'   the number of sample paths drawn (default \code{M = 100}). For
+#'   \code{plot_type = "psd"}, this is the number of PSD values shown in the
+#'   histogram (i.e., \code{M} PSD values simulated from the prior mixture).
+#' @param constraints Character; passed to \code{simulate_fash_prior()}.
+#'   One of \code{"none"}, \code{"initial"}, or \code{"orthogonal"}.
+#' @param x_range Optional numeric vector of length 2 defining the simulation
+#'   domain. If \code{NULL}, may be inferred inside \code{simulate_fash_prior()}.
+#' @param x_new Optional numeric vector of evaluation points for the prior
+#'   functions. If \code{NULL}, a default grid is used inside
+#'   \code{simulate_fash_prior()}.
+#'
+#' @return A \code{ggplot} object.
+#'
+#' @export
+visualize_fash_prior <- function(fash_obj,
+                                 plot_type = c("sample_path", "psd"),
+                                 M = 100,
+                                 constraints = c("none", "initial", "orthogonal"),
+                                 x_range = NULL,
+                                 x_new = NULL,
+                                 ...) {
+
+  plot_type   <- match.arg(plot_type)
+  constraints <- match.arg(constraints)
+
+  # 1. Simulate from prior
+  sim <- simulate_fash_prior(
+    fash_obj    = fash_obj,
+    M           = M,
+    constraints = constraints,
+    x_range     = x_range,
+    x_new       = x_new
+  )
+
+  x_grid   <- sim$x_new
+  samples  <- sim$samples  # matrix: length(x_grid) x M
+  psd_vec  <- sim$psd      # length M, PSD per sample
+
+  if (plot_type == "sample_path") {
+
+    df <- data.frame(
+      x         = rep(x_grid, times = M),
+      y         = as.vector(samples),
+      sample_id = rep(seq_len(M), each = length(x_grid)),
+      psd       = factor(round(rep(psd_vec, each = length(x_grid)), 4))
+    )
+
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y,
+                                          group = sample_id,
+                                          color = psd,
+                                          linetype = psd)) +
+      ggplot2::geom_line(alpha = 0.6) +
+      ggplot2::labs(
+        x = "Condition",
+        y = "Function value",
+        color    = "PSD",
+        linetype = "PSD",
+        title = "Sample paths from FASH prior"
+      ) +
+      ggplot2::theme_minimal()
+
+    # symmetric y-limits based on overall magnitude
+    max_abs <- max(abs(samples), na.rm = TRUE)
+    if (is.finite(max_abs) && max_abs > 0) {
+      radius <- max_abs * 1.05
+      p <- p + ggplot2::coord_cartesian(ylim = c(-radius, radius))
+    }
+
+    return(p)
+
+  } else if (plot_type == "psd") {
+
+    df_psd <- data.frame(psd = psd_vec)
+
+    p <- ggplot2::ggplot(df_psd, ggplot2::aes(x = psd)) +
+      ggplot2::geom_histogram(
+        bins = min(30, max(5, length(unique(psd_vec)))),
+        color = "white"
+      ) +
+      ggplot2::labs(
+        x = "Predictive standard deviation (PSD)",
+        y = "Frequency",
+        title = sprintf("Histogram of %d PSD values from FASH prior", M)
+      ) +
+      ggplot2::theme_minimal()
+
+    return(p)
+  }
+}
 
 
 
