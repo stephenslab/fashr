@@ -10,8 +10,7 @@ visualize_fash_prior(
   M = 100,
   constraints = c("none", "initial", "orthogonal"),
   x_range = NULL,
-  x_new = NULL,
-  ...
+  x_new = NULL
 )
 }
 \arguments{

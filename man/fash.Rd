@@ -43,7 +43,7 @@ fash(
 
 \item{betaprec}{A numeric value representing the precision of the fixed effects coefficients.}
 
-\item{order}{An integer specifying the order of the Integrated Wiener Process (IWP) prior.}
+\item{order}{A positive integer specifying the order of the Integrated Wiener Process (IWP) prior.}
 
 \item{pred_step}{A numeric value specifying the prediction step size.}
 

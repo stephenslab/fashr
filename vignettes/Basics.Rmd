@@ -224,11 +224,10 @@ fash_fit$prior_weights
 We can also visualize the fitted prior in FASH by looking at some sample paths. 
 As the baseline component is often diffuse, we can visualize the prior sample paths under two different constraints: (1) `initial` constraint, which fixes each sample path (and its derivatives) to have zero initial values; (2) `orthogonal` constraint, which forces each sample path to be orthogonal to the null space $S_0$.
 
-```{r, fig.height=4.5, fig.width=3.5}
+```{r, fig.height=3.5, fig.width=4}
 visualize_fash_prior(fash_fit, constraints = "initial")
 visualize_fash_prior(fash_fit, constraints = "orthogonal")
 ```
-
 
 We can take a look at their posterior weights in each GP component:
 

@@ -28,8 +28,7 @@ Imports:
     rlang,
     reshape2,
     ggplot2,
-    cowplot,
-    rlang
+    cowplot
 Suggests: 
     knitr,
     rmarkdown

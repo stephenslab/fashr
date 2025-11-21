@@ -13,7 +13,7 @@
 #' @param likelihood A character string specifying the likelihood function to use. Options are `gaussian` and `poisson`.
 #' @param num_basis An integer specifying the number of O-Spline basis functions.
 #' @param betaprec A numeric value representing the precision of the fixed effects coefficients.
-#' @param order An integer specifying the order of the Integrated Wiener Process (IWP) prior.
+#' @param order A positive integer specifying the order of the Integrated Wiener Process (IWP) prior.
 #' @param pred_step A numeric value specifying the prediction step size.
 #' @param penalty A numeric value representing the lambda value for the Dirichlet prior.
 #' @param num_cores An integer specifying the number of cores to use for parallel processing.
@@ -284,15 +284,18 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
 
 #' Plot Method for fash Objects
 #'
-#' Generates a plot for a \code{fash} object, providing either a heatmap of posterior weights
-#' or a structure plot summarizing component contributions across datasets.
+#' Generates a plot for a \code{fash} object, providing either a
+#' heatmap of posterior weights or a structure plot summarizing
+#' component contributions across datasets.
 #'
 #' @param x A \code{fash} object containing the results of the FASH pipeline.
+#' 
 #' @param plot_type A character string specifying the type of plot to generate.
 #'   One of:
 #'   - \code{"heatmap"}: Bubble/heatmap plot of posterior weights (default).
 #'   - \code{"structure"}: Structure plot of mixture components.
 #'   - \code{"function"}: Plot fitted effect function for a selected unit.
+#' 
 #' @param ordering A character string specifying the method for reordering datasets in the structure plot.
 #'   Only used if \code{plot_type = "structure"}.
 #'
@@ -302,6 +305,7 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
 #'
 #' @param discrete A logical value. If \code{TRUE}, treats PSD values as discrete categories with distinct colors
 #'                 in the structure plot. Ignored if \code{plot_type = "heatmap"} or \code{"function"}.
+#' 
 #' @param ... Additional arguments passed to \code{plot_heatmap}, \code{fash_structure_plot} or \code{plot_function},
 #'
 #' @return A plot object (typically a \code{ggplot}).
@@ -322,6 +326,7 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
 #' plot(fash_obj, plot_type = "structure", ordering = "mean", discrete = TRUE)
 #'
 #' @export
+#' 
 plot.fash <- function(x,
                       plot_type = c("heatmap", "structure", "function"),
                       ordering = NULL,
@@ -1254,8 +1259,7 @@ visualize_fash_prior <- function(fash_obj,
                                  M = 100,
                                  constraints = c("none", "initial", "orthogonal"),
                                  x_range = NULL,
-                                 x_new = NULL,
-                                 ...) {
+                                 x_new = NULL) {
 
   plot_type   <- match.arg(plot_type)
   constraints <- match.arg(constraints)

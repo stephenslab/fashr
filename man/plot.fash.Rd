@@ -38,8 +38,9 @@ in the structure plot. Ignored if \code{plot_type = "heatmap"} or \code{"functio
 A plot object (typically a \code{ggplot}).
 }
 \description{
-Generates a plot for a \code{fash} object, providing either a heatmap of posterior weights
-or a structure plot summarizing component contributions across datasets.
+Generates a plot for a \code{fash} object, providing either a
+heatmap of posterior weights or a structure plot summarizing
+component contributions across datasets.
 }
 \examples{
 set.seed(1)
