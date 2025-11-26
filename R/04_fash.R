@@ -1311,7 +1311,7 @@ visualize_fash_prior <- function(fash_obj,
 
     df_psd <- data.frame(psd = psd_vec)
 
-    p <- ggplot2::ggplot(df_psd, ggplot2::aes(x = psd)) +
+    p <- ggplot2::ggplot(df_psd, ggplot2::aes(x = .data$psd)) +
       ggplot2::geom_histogram(
         bins = min(30, max(5, length(unique(psd_vec)))),
         color = "white"

@@ -17,7 +17,7 @@ all: $(TMB_TARGETS)
 
 # General rule to compile any .cpp file into a shared object
 %.$(EXT): %.cpp
-	$(R_HOME)/bin$(R_ARCH_BIN)/Rscript --vanilla -e "TMB::compile('$<', '-O0 -g')"
+	$(R_HOME)/bin$(R_ARCH_BIN)/Rscript --vanilla -e "TMB::compile('$<', '', safebounds = FALSE,safeunload = FALSE)"
 
 # Clean up generated shared object and intermediate files
 clean:
