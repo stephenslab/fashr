@@ -8,7 +8,9 @@ vignette: >
 ---
 
 ```{r setup}
-knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
+knitr::opts_chunk$set(fig.width = 8, fig.height = 6,comment = "#",
+                      collapse = TRUE,results = "hold",
+					  fig.align = "center")
 library(fashr)
 library(ggplot2)
 ```
