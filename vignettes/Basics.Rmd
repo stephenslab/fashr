@@ -319,7 +319,7 @@ fash_fit_2 <- fash(Y = "y", smooth_var = "x", S = "sd", data_list = datasets, or
 fash_fit_2
 ```
 
-Take a look at the structure plot:
+Take a look at the posterior weights:
 
 ```{r, fig.height=4, fig.width=4}
 plot(fash_fit_2, discrete = TRUE)
