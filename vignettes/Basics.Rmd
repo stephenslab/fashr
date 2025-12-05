@@ -194,7 +194,7 @@ The function `fash()` sequentially performs the following key steps:
 
    where $\tilde{\pi}_{i0}$ is the local false discovery rate (LFDR) under the null hypothesis $\beta_i(t) \in S_0$.
 
-### Testing Nonlinear Dynamic
+### Testing Nonlinear Dynamic eQTLs
 
 We first aim to detect dynamic eQTLs with nonlinear dynamics (Category C).
 
@@ -304,19 +304,8 @@ str(fitted_beta_samples)
 Let's plot the inferred effect size for the first detected eQTL:
 
 ```{r, fig.height=4, fig.width=4}
-plot(datasets[[detected_indices[1]]]$x, datasets[[detected_indices[1]]]$y, type = "p", col = "black", lwd = 2, xlab = "Time", ylab = "Effect Size")
-lines(fitted_beta_new$x, fitted_beta_new$mean, col = "red", lwd = 2)
-lines(datasets[[detected_indices[1]]]$x, datasets[[detected_indices[1]]]$truef, col = "black", lwd = 1, lty = 2)
-polygon(c(fitted_beta_new$x, rev(fitted_beta_new$x)), c(fitted_beta_new$lower, rev(fitted_beta_new$upper)), col = rgb(1, 0, 0, 0.2), border = NA)
-```
-
-
-Alternatively, one can generate this figure through `plot` and specify `plot_type = "function"`:
-
-```{r, fig.height=4, fig.width=4}
 plot(fash_fit, selected_unit = detected_indices[1], plot_type = "function")
 ```
-
 
 ### Testing Dynamic eQTLs
 
@@ -362,7 +351,7 @@ For example, we might be interested in detecting dynamic eQTLs whose maximum eff
 
 For this type of problem, we could compute the local false sign rate (lfsr) for each eQTL $j$ using the function `testing_functional()`:
 
-```{r}
+```{r, results="hide"}
 evaluations <- seq(1, 16, length.out = 100)
 functional_F <- function(x){
   max_first_half <- max(x[evaluations <= 8])
@@ -379,7 +368,7 @@ lfsr_result <- testing_functional(
 
 Visualize the lfsr:
 
-```{r}
+```{r, fig.height=2.5, fig.width=3}
 bar_colors <- ifelse(labels == "A", "gray", "blue")
 barplot(lfsr_result$lfsr, col = bar_colors, xlab = "eQTL index", ylab = "LFSR")
 legs <- c("Category A", "Category B/C")
