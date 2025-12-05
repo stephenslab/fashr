@@ -63,7 +63,7 @@ fash_fit
 
 Take a look at the structure plot ordered by local false discovery rate:
 
-```{r, fig.height=3.5, fig.width=4}
+```{r structure_plot, fig.height=3.5, fig.width=4}
 plot(fash_fit, ordering = "lfdr")
 ```
 
@@ -83,7 +83,7 @@ str(fitted_samps)
 
 Visualize the predictions for the first dataset together with the data:
 
-```{r, fig.height=4, fig.width=4}
+```{r predictions, fig.height=4, fig.width=4}
 plot(datasets[[1]]$t, datasets[[1]]$y, type = "p", col = "black", ylab = "y", xlab = "t")
 lines(fitted$x, fitted$mean, col = "red")
 polygon(c(fitted$x, rev(fitted$x)), c(fitted$lower, rev(fitted$upper)), col = rgb(1, 0, 0, 0.2), border = NA)
@@ -92,7 +92,7 @@ matlines(fitted$x, fitted_samps[, 1:5], col = "blue", lty = 2, lwd = 0.5)
 
 Compute the FDR, and highlight the datasets with FDR < 0.1:
 
-```{r, fig.height=5, fig.width=5}
+```{r fdr, fig.height=5, fig.width=5}
 fdr_result <- fdr_control(fash_fit, alpha = 0.1, plot = TRUE)
 ```
 

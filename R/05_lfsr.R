@@ -65,7 +65,7 @@ compute_lfsr_sampling <- function(fash_fit, index, smooth_var = NULL, M = 3000, 
 #'
 #' This function computes the minimum local false sign rate (LFSR) for each dataset in a \code{fash} object.
 #' It estimates the probability that the sign of the effect is positive or negative at each x value
-#' and returns a ranked data frame.
+#' and returns a data frame.
 #'
 #' @param fash_fit A \code{fash} object containing posterior samples.
 #' @param smooth_var A numeric vector specifying refined x values for prediction.
@@ -143,6 +143,9 @@ min_lfsr_sampling <- function(fash_fit, smooth_var = NULL, M = 3000, num_cores =
 
   # Compute cumulative false sign rate (FSR)
   lfsr_df$fsr <- cumsum(lfsr_df$min_lfsr) / seq_len(n_datasets)
+
+  # reorder back to original index
+  lfsr_df <- lfsr_df[order(lfsr_df$index), ]
 
   return(lfsr_df)
 }
@@ -437,7 +440,7 @@ compute_lfsr_summary <- function(object, index = 1, smooth_var = NULL, deriv = 0
 #' @importFrom utils txtProgressBar setTxtProgressBar
 #'
 #' @export
-#' 
+#'
 min_lfsr_summary <- function(object, smooth_var = NULL, num_cores = 1, deriv = 0) {
   datasets <- object$fash_data$data_list
   n_datasets <- length(datasets)
@@ -473,6 +476,9 @@ min_lfsr_summary <- function(object, smooth_var = NULL, num_cores = 1, deriv = 0
 
   # Compute cumulative false sign rate (FSR)
   lfsr_df$fsr <- cumsum(lfsr_df$min_lfsr) / seq_len(n_datasets)
+
+  # reorder back to original index
+  lfsr_df <- lfsr_df[order(lfsr_df$index), ]
 
   return(lfsr_df)
 }

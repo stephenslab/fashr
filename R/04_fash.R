@@ -262,7 +262,7 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
   if (plot) {
     plot(
       1:n, cumulative_lfdr, type = "b", pch = 19, col = "blue",
-      xlab = "Dataset Rank (Sorted by LFDR)", ylab = "Cumulative FDR",
+      xlab = "Dataset Rank (Sorted by lfdr)", ylab = "Cumulative FDR",
       main = sprintf("FDR Control with Alpha = %.2f", alpha)
     )
     abline(h = alpha, col = "red", lty = 2)
@@ -289,13 +289,13 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
 #' component contributions across datasets.
 #'
 #' @param x A \code{fash} object containing the results of the FASH pipeline.
-#' 
+#'
 #' @param plot_type A character string specifying the type of plot to generate.
 #'   One of:
 #'   - \code{"heatmap"}: Bubble/heatmap plot of posterior weights (default).
 #'   - \code{"structure"}: Structure plot of mixture components.
 #'   - \code{"function"}: Plot fitted effect function for a selected unit.
-#' 
+#'
 #' @param ordering A character string specifying the method for reordering datasets in the structure plot.
 #'   Only used if \code{plot_type = "structure"}.
 #'
@@ -305,7 +305,7 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
 #'
 #' @param discrete A logical value. If \code{TRUE}, treats PSD values as discrete categories with distinct colors
 #'                 in the structure plot. Ignored if \code{plot_type = "heatmap"} or \code{"function"}.
-#' 
+#'
 #' @param ... Additional arguments passed to \code{plot_heatmap}, \code{fash_structure_plot} or \code{plot_function},
 #'
 #' @return A plot object (typically a \code{ggplot}).
@@ -326,7 +326,7 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
 #' plot(fash_obj, plot_type = "structure", ordering = "mean", discrete = TRUE)
 #'
 #' @export
-#' 
+#'
 plot.fash <- function(x,
                       plot_type = c("heatmap", "structure", "function"),
                       ordering = NULL,
@@ -412,7 +412,7 @@ plot.fash <- function(x,
 #' @importFrom graphics lines
 #' @importFrom graphics polygon
 #' @importFrom grDevices rgb
-#' 
+#'
 plot_function <- function(fash_obj, selected_unit, smooth_var = NULL, ...) {
   # Extract dataset
   dataset <- fash_obj$fash_data$data_list[[selected_unit]]
@@ -624,7 +624,7 @@ print.fash <- function(x, ...) {
 #' Perform Functional Hypothesis Testing on Posterior Samples
 #'
 #' This function applies a user-specified functional to posterior samples from a \code{fash} object, calculates the
-#' local false sign rate (LFSR) for each dataset, and returns a ranked data frame. The computation can be
+#' local false sign rate (LFSR) for each dataset, and returns a data frame. The computation can be
 #' parallelized if \code{num_cores > 1}.
 #'
 #' @param functional A function applied to each posterior sample to extract a scalar statistic.
@@ -705,6 +705,10 @@ testing_functional <- function(functional,
   result_df <- result_df[order(result_df$lfsr), ]
 
   result_df$cfsr <- cumsum(result_df$lfsr) / seq_len(nrow(result_df))
+
+  # reorder the data.frame back to original indices
+  result_df <- result_df[order(result_df$indices), ]
+  rownames(result_df) <- names(fash$fash_data$data_list)
 
   return(result_df)
 }
@@ -1251,9 +1255,9 @@ simulate_fash_prior <- function(fash_obj,
 #' @importFrom ggplot2 coord_cartesian
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 theme_minimal
-#' 
+#'
 #' @export
-#' 
+#'
 visualize_fash_prior <- function(fash_obj,
                                  plot_type = c("sample_path", "psd"),
                                  M = 100,

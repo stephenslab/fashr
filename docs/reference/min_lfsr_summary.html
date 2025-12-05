@@ -108,7 +108,7 @@ If <code>NULL</code>, defaults to the dataset's original x values.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Completed data setup in 0.00 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Starting likelihood computation...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Completed likelihood computation in 0.09 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Completed likelihood computation in 0.08 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Starting empirical Bayes estimation...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Completed empirical Bayes estimation in 0.00 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fash object created successfully.</span>
@@ -118,15 +118,15 @@ If <code>NULL</code>, defaults to the dataset's original x values.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   index  min_lfsr       fsr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 0.1088357 0.1088357</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 0.3352421 0.2220389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 0.1088357 0.1088357</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compute min LFSR for all datasets in parallel</span></span></span>
 <span class="r-in"><span><span class="va">result_parallel</span> <span class="op">&lt;-</span> <span class="fu">min_lfsr_summary</span><span class="op">(</span><span class="va">fash_obj</span>, num_cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result_parallel</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   index  min_lfsr       fsr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 0.1088357 0.1088357</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 0.3352421 0.2220389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 0.1088357 0.1088357</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

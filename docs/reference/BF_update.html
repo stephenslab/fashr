@@ -132,13 +132,14 @@ the proportion of null datasets (\(\pi_0\)), and updates the model accordingly.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>   psd prior_weight</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   0            1</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fash_updated</span><span class="op">$</span><span class="va">posterior_weights</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dataset_1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dataset_2 1</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fash_updated</span><span class="op">$</span><span class="va">BF</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8031369 1.4835793</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fash_updated</span><span class="op">$</span><span class="va">lfdr</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dataset_1 Dataset_2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1         1 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

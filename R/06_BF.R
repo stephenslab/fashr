@@ -203,7 +203,7 @@ fash_prior_posterior_update <- function (L_matrix, pi0, pi_alt, grid) {
     posterior_weight[i, ] <- normalized_values
   }
   colnames(posterior_weight) <- as.character(grid[non_trivial])
-
+  rownames(posterior_weight) <- rownames(L_matrix)
   # Return results
   return(list(
     prior_weight = prior_weight,
@@ -292,8 +292,11 @@ BF_update <- function (fash, plot = FALSE) {
   BF_res <- BF_control(BF, plot = plot)
   pi0_hat <- BF_res$pi0_hat_star
 
+  L_matrix <- fash$L_matrix
+  rownames(L_matrix) <- rownames(fash$posterior_weights)
+
   # Update prior and posterior weights
-  update_res <- fash_prior_posterior_update(L_matrix = fash$L_matrix,
+  update_res <- fash_prior_posterior_update(L_matrix = L_matrix,
                   pi0 = pi0_hat, pi_alt = pi_alt, grid = fash$psd_grid)
 
   # Update fash object
