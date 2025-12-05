@@ -6,20 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Introduction to FASH • fashr</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to FASH">
-<meta property="og:description" content="fashr">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -33,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.32</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.38</span>
       </span>
     </div>
 
@@ -61,7 +60,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -80,83 +79,153 @@
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>The package considers the following functional adaptive shrinkage
-(FASH) scenarios. Given <span class="math inline">\(N\)</span> sets of
-series data: <span class="math inline">\(\boldsymbol{y} = \{y_{ij}:
-j\in[n_i]\}_{i=1}^{N}\)</span>, where <span class="math inline">\(n_i\)</span> is the length of the <span class="math inline">\(i\)</span>-th series, we assume that each series
-<span class="math inline">\(\boldsymbol{y}_i = [y_{i1},...,y_{in_i}]^T
-\in \mathbb{R}^{n_i}\)</span> represents <span class="math inline">\(n_i\)</span> measurements over the continuous
-treatment <span class="math inline">\(t\)</span> at levels <span class="math inline">\(\boldsymbol{t}_i = [t_{i1},...,t_{in_i}]^T \in
-\mathbb{R}^{n_i}\)</span>. Furthermore, we assume each series <span class="math inline">\(\boldsymbol{y}_i\)</span> relates to a smooth
-function <span class="math inline">\(f_i(t)\)</span>, which is the main
-inferential interest. For example, <span class="math inline">\(y_{ij} =
-f_i(t_{ij}) + \epsilon_{ij}\)</span>, where <span class="math inline">\(\epsilon_{ij}\)</span> is the noise term.</p>
-<p>Different from traditional smoothing methods that assumes each <span class="math inline">\(f_i(t)\)</span> has a separate prior <span class="math inline">\(g_i\)</span>, FASH assumes that all <span class="math inline">\(f_i(t)\)</span> are <span class="math inline">\(iid\)</span> with a common prior <span class="math inline">\(g_f\)</span>. Generalizing the idea from <a href="https://academic.oup.com/biostatistics/article/18/2/275/2557030?login=true" class="external-link">Stephens,
+(FASH) scenarios. Given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+sets of series data:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐲</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>:</mo><mi>j</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>n</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup></mrow><annotation encoding="application/x-tex">\boldsymbol{y} = \{y_{ij}: j\in[n_i]\}_{i=1}^{N}</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math>
+is the length of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
+series, we assume that each series
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐲</mi><mi>i</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>y</mi><mrow><mi>i</mi><mn>1</mn></mrow></msub><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><msub><mi>y</mi><mrow><mi>i</mi><msub><mi>n</mi><mi>i</mi></msub></mrow></msub><mo stretchy="true" form="postfix">]</mo></mrow><mi>T</mi></msup><mo>∈</mo><msup><mi>ℝ</mi><msub><mi>n</mi><mi>i</mi></msub></msup></mrow><annotation encoding="application/x-tex">\boldsymbol{y}_i = [y_{i1},...,y_{in_i}]^T \in \mathbb{R}^{n_i}</annotation></semantics></math>
+represents
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>i</mi></msub><annotation encoding="application/x-tex">n_i</annotation></semantics></math>
+measurements over the continuous treatment
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+at levels
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐭</mi><mi>i</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>t</mi><mrow><mi>i</mi><mn>1</mn></mrow></msub><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><msub><mi>t</mi><mrow><mi>i</mi><msub><mi>n</mi><mi>i</mi></msub></mrow></msub><mo stretchy="true" form="postfix">]</mo></mrow><mi>T</mi></msup><mo>∈</mo><msup><mi>ℝ</mi><msub><mi>n</mi><mi>i</mi></msub></msup></mrow><annotation encoding="application/x-tex">\boldsymbol{t}_i = [t_{i1},...,t_{in_i}]^T \in \mathbb{R}^{n_i}</annotation></semantics></math>.
+Furthermore, we assume each series
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐲</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\boldsymbol{y}_i</annotation></semantics></math>
+relates to a smooth function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f_i(t)</annotation></semantics></math>,
+which is the main inferential interest. For example,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">y_{ij} = f_i(t_{ij}) + \epsilon_{ij}</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">\epsilon_{ij}</annotation></semantics></math>
+is the noise term.</p>
+<p>Different from traditional smoothing methods that assumes each
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f_i(t)</annotation></semantics></math>
+has a separate prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>i</mi></msub><annotation encoding="application/x-tex">g_i</annotation></semantics></math>,
+FASH assumes that all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f_i(t)</annotation></semantics></math>
+are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mi>i</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">iid</annotation></semantics></math>
+with a common prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>f</mi></msub><annotation encoding="application/x-tex">g_f</annotation></semantics></math>.
+Generalizing the idea from <a href="https://academic.oup.com/biostatistics/article/18/2/275/2557030?login=true" class="external-link">Stephens,
 2017</a> and <a href="https://www.nature.com/articles/s41588-018-0268-8" class="external-link">Urbut et al,
-2018</a>, the prior <span class="math inline">\(g_f\)</span> takes the
-following form of a finite mixture of Gaussian processes (GP): <span class="math display">\[g_f|\boldsymbol{\pi} =  \sum_{k=0}^{K}
-\pi_k\text{GP}(m_k,C_k),\]</span> where <span class="math inline">\(\boldsymbol{\pi} = [\pi_1,...,\pi_K]^T\)</span> is
-the prior mixing weight vector, <span class="math inline">\(m_k\)</span>
-is the mean function, and <span class="math inline">\(C_k\)</span> is
-the covariance function of the <span class="math inline">\(k\)</span>-th
+2018</a>, the prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>f</mi></msub><annotation encoding="application/x-tex">g_f</annotation></semantics></math>
+takes the following form of a finite mixture of Gaussian processes (GP):
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>f</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝛑</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mi>K</mi></munderover><msub><mi>π</mi><mi>k</mi></msub><mtext mathvariant="normal">GP</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>m</mi><mi>k</mi></msub><mo>,</mo><msub><mi>C</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">g_f|\boldsymbol{\pi} =  \sum_{k=0}^{K} \pi_k\text{GP}(m_k,C_k),</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛑</mi><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>π</mi><mn>1</mn></msub><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><msub><mi>π</mi><mi>K</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">\boldsymbol{\pi} = [\pi_1,...,\pi_K]^T</annotation></semantics></math>
+is the prior mixing weight vector,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>m</mi><mi>k</mi></msub><annotation encoding="application/x-tex">m_k</annotation></semantics></math>
+is the mean function, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>k</mi></msub><annotation encoding="application/x-tex">C_k</annotation></semantics></math>
+is the covariance function of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-th
 GP.</p>
-<p>Rather than integrating out the prior mixing weights <span class="math inline">\(\boldsymbol{\pi}\)</span> with a given prior <span class="math inline">\(p(\boldsymbol{\pi})\)</span> as <span class="math display">\[g_f =
-\int(g_f|\boldsymbol{\pi})p(\boldsymbol{\pi})d\boldsymbol{\pi},\]</span>
-FASH optimizes <span class="math inline">\(\hat{\boldsymbol{\pi}}\)</span> by maximizing the
-marginal likelihood of the data <span class="math inline">\(\boldsymbol{y}\)</span>: <span class="math display">\[\hat{\boldsymbol{\pi}} =
-\arg\max_{\boldsymbol{\pi}} \sum_{i=1}^{N} \log\left(\sum_{k=0}^{K}
-\pi_k \mathbf{L}_{ik}\right),\]</span> where <span class="math inline">\(\mathbf{L}_{ik}\)</span> denotes the marginal
-likelihood of the <span class="math inline">\(i\)</span>-th series data
-under the <span class="math inline">\(k\)</span>-th GP component.</p>
-<p>Specifically, the marginal likelihood <span class="math inline">\(\mathbf{L}_{ik}\)</span> is computed as: <span class="math display">\[
-\mathbf{L}_{ik} = \int p(\boldsymbol{y}_i \mid \boldsymbol{f}_i) \,
-\mathcal{N}\big(\boldsymbol{f}_i; m_k(\boldsymbol{t}_i),
-C_k(\boldsymbol{t}_i, \boldsymbol{t}_i)\big) \, d\boldsymbol{f}_i,
-\]</span> where <span class="math inline">\(\boldsymbol{f}_i =
-[f_i(t_{i1}), \ldots, f_i(t_{in_i})]^T\)</span> denotes the latent
-function values at the observed treatment levels <span class="math inline">\(\boldsymbol{t}_i\)</span>.</p>
-<p>Then the prior <span class="math inline">\(g_f\)</span> is determined
-as: <span class="math display">\[\hat{g}_f =
-\int(g_f|\boldsymbol{\pi})\delta_{\hat{\boldsymbol{\pi}}}(\boldsymbol{\pi})d\boldsymbol{\pi}
-= g_f|\hat{\boldsymbol{\pi}}.\]</span></p>
-<p>Based on the estimated prior <span class="math inline">\(\hat{g}\)</span>, FASH then obtains the posterior
-<span class="math inline">\(p(f_i(t)|\boldsymbol{y})\)</span> for by:
-<span class="math display">\[p(f_i(t)|\boldsymbol{y},
-\hat{\boldsymbol{\pi}}) = \sum_{k=0}^{K} \tilde{\pi}_k
-p_k(f_i(t)|\boldsymbol{y}_i),\]</span></p>
-<p>where <span class="math inline">\(p_k(f_i(t)|\boldsymbol{y}_i)\)</span> is the
-posterior of the <span class="math inline">\(i\)</span>-th series data
-under the <span class="math inline">\(k\)</span>-th GP component.</p>
+<p>Rather than integrating out the prior mixing weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>
+with a given prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\boldsymbol{\pi})</annotation></semantics></math>
+as
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>f</mi></msub><mo>=</mo><mo>∫</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>f</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><mi>𝛑</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">g_f = \int(g_f|\boldsymbol{\pi})p(\boldsymbol{\pi})d\boldsymbol{\pi},</annotation></semantics></math>
+FASH optimizes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛑</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\boldsymbol{\pi}}</annotation></semantics></math>
+by maximizing the marginal likelihood of the data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐲</mi><annotation encoding="application/x-tex">\boldsymbol{y}</annotation></semantics></math>:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝛑</mi><mo accent="true">̂</mo></mover><mo>=</mo><mo>arg</mo><munder><mo>max</mo><mi>𝛑</mi></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mi>K</mi></munderover><msub><mi>π</mi><mi>k</mi></msub><msub><mi>𝐋</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">\hat{\boldsymbol{\pi}} = \arg\max_{\boldsymbol{\pi}} \sum_{i=1}^{N} \log\left(\sum_{k=0}^{K} \pi_k \mathbf{L}_{ik}\right),</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐋</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\mathbf{L}_{ik}</annotation></semantics></math>
+denotes the marginal likelihood of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
+series data under the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-th
+GP component.</p>
+<p>Specifically, the marginal likelihood
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐋</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\mathbf{L}_{ik}</annotation></semantics></math>
+is computed as:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐋</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo>=</mo><mo>∫</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐲</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>𝐟</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>𝒩</mi><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mi>𝐟</mi><mi>i</mi></msub><mo>;</mo><msub><mi>m</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐭</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><msub><mi>C</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐭</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐭</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><msub><mi>𝐟</mi><mi>i</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathbf{L}_{ik} = \int p(\boldsymbol{y}_i \mid \boldsymbol{f}_i) \, \mathcal{N}\big(\boldsymbol{f}_i; m_k(\boldsymbol{t}_i), C_k(\boldsymbol{t}_i, \boldsymbol{t}_i)\big) \, d\boldsymbol{f}_i,
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐟</mi><mi>i</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mrow><mi>i</mi><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mrow><mi>i</mi><msub><mi>n</mi><mi>i</mi></msub></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">\boldsymbol{f}_i = [f_i(t_{i1}), \ldots, f_i(t_{in_i})]^T</annotation></semantics></math>
+denotes the latent function values at the observed treatment levels
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐭</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\boldsymbol{t}_i</annotation></semantics></math>.</p>
+<p>Then the prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>f</mi></msub><annotation encoding="application/x-tex">g_f</annotation></semantics></math>
+is determined as:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>g</mi><mo accent="true">̂</mo></mover><mi>f</mi></msub><mo>=</mo><mo>∫</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>g</mi><mi>f</mi></msub><mrow><mo stretchy="true" form="prefix">|</mo><mi>𝛑</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>δ</mi><mover><mi>𝛑</mi><mo accent="true">̂</mo></mover></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><mi>𝛑</mi><mo>=</mo><msub><mi>g</mi><mi>f</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><mover><mi>𝛑</mi><mo accent="true">̂</mo></mover><mi>.</mi></mrow><annotation encoding="application/x-tex">\hat{g}_f = \int(g_f|\boldsymbol{\pi})\delta_{\hat{\boldsymbol{\pi}}}(\boldsymbol{\pi})d\boldsymbol{\pi} = g_f|\hat{\boldsymbol{\pi}}.</annotation></semantics></math></p>
+<p>Based on the estimated prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>g</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{g}</annotation></semantics></math>,
+FASH then obtains the posterior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><mi>𝐲</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(f_i(t)|\boldsymbol{y})</annotation></semantics></math>
+for by:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><mi>𝐲</mi><mo>,</mo><mover><mi>𝛑</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mi>K</mi></munderover><msub><mover><mi>π</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><msub><mi>p</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>𝐲</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">p(f_i(t)|\boldsymbol{y}, \hat{\boldsymbol{\pi}}) = \sum_{k=0}^{K} \tilde{\pi}_k p_k(f_i(t)|\boldsymbol{y}_i),</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>k</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>𝐲</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_k(f_i(t)|\boldsymbol{y}_i)</annotation></semantics></math>
+is the posterior of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
+series data under the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-th
+GP component.</p>
 <p>With the posterior, FASH aim to simultaneously answer any subset of
 the following questions:</p>
 <ul>
-<li>What is the estimated function <span class="math inline">\(f_i(t)\)</span> for each series <span class="math inline">\(y_i\)</span>? (Smoothing)</li>
-<li>With a false discovery rate (FDR) control, which <span class="math inline">\(f_i(t) \in S_0 \subset S\)</span>? (Hypothesis
-testing)</li>
-<li>Is there any clustering structure in the estimated functions <span class="math inline">\(f_i(t)\)</span> in terms of their behaviors?
-(Clustering)</li>
+<li>What is the estimated function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f_i(t)</annotation></semantics></math>
+for each series
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math>?
+(Smoothing)</li>
+<li>With a false discovery rate (FDR) control, which
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msub><mi>S</mi><mn>0</mn></msub><mo>⊂</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">f_i(t) \in S_0 \subset S</annotation></semantics></math>?
+(Hypothesis testing)</li>
+<li>Is there any clustering structure in the estimated functions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f_i(t)</annotation></semantics></math>
+in terms of their behaviors? (Clustering)</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="lgp-prior">LGP Prior<a class="anchor" aria-label="anchor" href="#lgp-prior"></a>
 </h2>
-<p>For now, let’s assume the mean function <span class="math inline">\(m_k\)</span> is zero, and each GP component is
-defined through the following ordinary differential equation (ODE):
-<span class="math display">\[Lf(t) = \sigma_k W(t),\]</span> where <span class="math inline">\(W(t)\)</span> is a Gaussian white noise process
-and <span class="math inline">\(L\)</span> is a known <span class="math inline">\(p\)</span>th order linear differential operator.
-Given the <span class="math inline">\(L\)</span> operator, the
-covariance function <span class="math inline">\(C_k\)</span> is
-completely specified by the single standard deviation parameter <span class="math inline">\(\sigma_k\)</span>.</p>
-<p>This prior <strong>shrinks</strong> the function <span class="math inline">\(f\)</span> toward the <strong>base model</strong>
-<span class="math inline">\(S_0 = \text{Null}\{L\}\)</span>, which is
-the set of functions that satisfy <span class="math inline">\(Lf =
-0\)</span>. The smaller <span class="math inline">\(\sigma_k\)</span>
-is, the stronger the shrinkage is. By choosing different <span class="math inline">\(L\)</span> operator, this one-parameter GP family
-can produce prior that encodes different kinds of shapes. Some examples
-are discussed in <a href="https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2289532" class="external-link">Zhang
+<p>For now, let’s assume the mean function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>m</mi><mi>k</mi></msub><annotation encoding="application/x-tex">m_k</annotation></semantics></math>
+is zero, and each GP component is defined through the following ordinary
+differential equation (ODE):
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>σ</mi><mi>k</mi></msub><mi>W</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">Lf(t) = \sigma_k W(t),</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W(t)</annotation></semantics></math>
+is a Gaussian white noise process and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+is a known
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>th
+order linear differential operator. Given the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+operator, the covariance function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>k</mi></msub><annotation encoding="application/x-tex">C_k</annotation></semantics></math>
+is completely specified by the single standard deviation parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\sigma_k</annotation></semantics></math>.</p>
+<p>This prior <strong>shrinks</strong> the function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+toward the <strong>base model</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mtext mathvariant="normal">Null</mtext><mo stretchy="false" form="prefix">{</mo><mi>L</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S_0 = \text{Null}\{L\}</annotation></semantics></math>,
+which is the set of functions that satisfy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>f</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">Lf = 0</annotation></semantics></math>.
+The smaller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\sigma_k</annotation></semantics></math>
+is, the stronger the shrinkage is. By choosing different
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+operator, this one-parameter GP family can produce prior that encodes
+different kinds of shapes. Some examples are discussed in <a href="https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2289532" class="external-link">Zhang
 et.al 2023</a> and <a href="https://arxiv.org/abs/2305.09914" class="external-link">Zhang
 et.al 2024</a>.</p>
 <p>The above one-parameter family of GP priors is flexible and
-interpretable. By choosing the <span class="math inline">\(L\)</span>
+interpretable. By choosing the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
 operator, we can choose different types of base model to shrink the
 function toward. In order words, it specifies the center of the
 shrinkage (like the null hypothesis).</p>
@@ -164,14 +233,16 @@ shrinkage (like the null hypothesis).</p>
 <h3 id="example-integrated-wiener-process">
 <em>Example: Integrated Wiener Process</em><a class="anchor" aria-label="anchor" href="#example-integrated-wiener-process"></a>
 </h3>
-<p>For example, when <span class="math inline">\(L =
-\frac{d^2}{dt^2}\)</span>, the prior is called a second-order Integrated
-Wiener Process (IWP) prior, which shrinks the function toward the base
-model <span class="math inline">\(S_0 = \text{Null}\{L\} =
-\text{span}\{1,t\}\)</span>.</p>
-<p>When all the observations are Gaussian, the posterior mean <span class="math inline">\(\mathbb{E}(f|\boldsymbol{y}_i)\)</span> using the
-second order IWP is exactly the cubic smoothing spline estimate in <a href="https://www.jstor.org/stable/2239347" class="external-link">Kimeldorf and Wahba,
-1970</a>.</p>
+<p>For example, when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mfrac><msup><mi>d</mi><mn>2</mn></msup><mrow><mi>d</mi><msup><mi>t</mi><mn>2</mn></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">L = \frac{d^2}{dt^2}</annotation></semantics></math>,
+the prior is called a second-order Integrated Wiener Process (IWP)
+prior, which shrinks the function toward the base model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>0</mn></msub><mo>=</mo><mtext mathvariant="normal">Null</mtext><mo stretchy="false" form="prefix">{</mo><mi>L</mi><mo stretchy="false" form="postfix">}</mo><mo>=</mo><mtext mathvariant="normal">span</mtext><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S_0 = \text{Null}\{L\} = \text{span}\{1,t\}</annotation></semantics></math>.</p>
+<p>When all the observations are Gaussian, the posterior mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>𝐲</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbb{E}(f|\boldsymbol{y}_i)</annotation></semantics></math>
+using the second order IWP is exactly the cubic smoothing spline
+estimate in <a href="https://www.jstor.org/stable/2239347" class="external-link">Kimeldorf and
+Wahba, 1970</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="computation-issue">
@@ -182,24 +253,35 @@ apply the following two tricks:</p>
 <ul>
 <li>
 <strong>Finite Element Method</strong>: The finite element method
-approximates each GP <span class="math inline">\(f(t)\)</span> as a
-linear combination of basis functions: <span class="math inline">\(f(t)
-= \sum_{l=1}^{m} w_l \psi_l(t)\)</span>, where the <span class="math inline">\(m\)</span> basis functions <span class="math inline">\(\psi_l(t)\)</span> are fixed and the weights <span class="math inline">\(\boldsymbol{w}\)</span> follow Gaussian
-distribution. This simplifies the computation of each <span class="math inline">\(p(f_i(t)|\boldsymbol{y}_i,\sigma_k)\)</span> to
-<span class="math inline">\(p(\boldsymbol{w}|\boldsymbol{y}_i,\sigma_k)\)</span>.
-The weights not only have smaller dimension than the function <span class="math inline">\(f(t)\)</span>, but also have a sparse precision
-matrix. See <a href="https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2289532" class="external-link">Zhang
+approximates each GP
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(t)</annotation></semantics></math>
+as a linear combination of basis functions:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>l</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></msubsup><msub><mi>w</mi><mi>l</mi></msub><msub><mi>ψ</mi><mi>l</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(t) = \sum_{l=1}^{m} w_l \psi_l(t)</annotation></semantics></math>,
+where the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+basis functions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ψ</mi><mi>l</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\psi_l(t)</annotation></semantics></math>
+are fixed and the weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐰</mi><annotation encoding="application/x-tex">\boldsymbol{w}</annotation></semantics></math>
+follow Gaussian distribution. This simplifies the computation of each
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>𝐲</mi><mi>i</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(f_i(t)|\boldsymbol{y}_i,\sigma_k)</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐰</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>𝐲</mi><mi>i</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\boldsymbol{w}|\boldsymbol{y}_i,\sigma_k)</annotation></semantics></math>.
+The weights not only have smaller dimension than the function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(t)</annotation></semantics></math>,
+but also have a sparse precision matrix. See <a href="https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2289532" class="external-link">Zhang
 et al, 2023</a> and <a href="https://academic.oup.com/jrsssb/article/73/4/423/7034732?login=true" class="external-link">Lindgren
 et.al, 2011</a> for more details.</li>
 <li>
 <strong>Laplace Approximation</strong>: An efficient way to compute
-the posterior of the weights <span class="math inline">\(\boldsymbol{w}\)</span> is to use the Laplace
-approximation, as discussed in <a href="https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1467-9868.2008.00700.x" class="external-link">Rue
+the posterior of the weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐰</mi><annotation encoding="application/x-tex">\boldsymbol{w}</annotation></semantics></math>
+is to use the Laplace approximation, as discussed in <a href="https://rss.onlinelibrary.wiley.com/doi/full/10.1111/j.1467-9868.2008.00700.x" class="external-link">Rue
 et al, 2009</a>. The Laplace approximation approximates the posterior
 distribution as a Gaussian distribution with the mode at the posterior
 mean and the covariance matrix as the inverse of the Hessian matrix at
-the mode: <span class="math inline">\(p_G(\boldsymbol{w}|\boldsymbol{y},
-\sigma_k) = \mathcal{N}(\hat{\boldsymbol{w}}, \hat{V})\)</span>.</li>
+the mode:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>G</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐰</mi><mo stretchy="false" form="prefix">|</mo><mi>𝐲</mi><mo>,</mo><msub><mi>σ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>𝒩</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝐰</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>V</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_G(\boldsymbol{w}|\boldsymbol{y}, \sigma_k) = \mathcal{N}(\hat{\boldsymbol{w}}, \hat{V})</annotation></semantics></math>.</li>
 </ul>
 <p>In this way, the complicated integration required in the posterior
 computation is replaced by a simpler optimization task with sparse
@@ -213,9 +295,7 @@ of computation cost.</p>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -228,16 +308,16 @@ of computation cost.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>
