@@ -310,6 +310,14 @@ lines(datasets[[detected_indices[1]]]$x, datasets[[detected_indices[1]]]$truef, 
 polygon(c(fitted_beta_new$x, rev(fitted_beta_new$x)), c(fitted_beta_new$lower, rev(fitted_beta_new$upper)), col = rgb(1, 0, 0, 0.2), border = NA)
 ```
 
+
+Alternatively, one can generate this figure through `plot` and specify `plot_type = "function"`:
+
+```{r, fig.height=4, fig.width=4}
+plot(fash_fit, selected_unit = detected_indices[1], plot_type = "function")
+```
+
+
 ### Testing Dynamic eQTLs
 
 We may also be interested in detecting any dynamic eQTLs, including both linear and nonlinear cases (Categories B and C).
@@ -347,5 +355,45 @@ What is the false discovery rate?
 ```{r}
 sum(labels[detected_indices_2] == "A")/length(detected_indices_2)
 ```
+
+
+With the posterior, we might also be interested in testing whether $H_0: \mathcal{F}(\beta_j(t)) = 0$ for some functional $\mathcal{F}$.
+For example, we might be interested in detecting dynamic eQTLs whose maximum effect in the first 8 days is larger than their maximum effect in the last 8 days, so $\mathcal{F}(\beta_j(t)) = \max_{t \in [1,8]} \beta_j(t) - \max_{t \in [9,16]} \beta_j(t)$.
+
+For this type of problem, we could compute the local false sign rate (lfsr) for each eQTL $j$ using the function `testing_functional()`:
+
+```{r}
+evaluations <- seq(1, 16, length.out = 100)
+functional_F <- function(x){
+  max_first_half <- max(x[evaluations <= 8])
+  max_second_half <- max(x[evaluations > 8])
+  return(max_first_half - max_second_half)
+}
+lfsr_result <- testing_functional(
+  functional = functional_F,
+  fash = fash_fit_2,
+  indices = 1:100,
+  smooth_var = evaluations
+)
+```
+
+Visualize the lfsr:
+
+```{r}
+bar_colors <- ifelse(labels == "A", "gray", "blue")
+barplot(lfsr_result$lfsr, col = bar_colors, xlab = "eQTL index", ylab = "LFSR")
+legs <- c("Category A", "Category B/C")
+legend("topleft", legend = legs, fill = c("gray", "blue"))
+```
+
+
+
+
+
+
+
+
+
+
 
 
