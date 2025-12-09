@@ -292,7 +292,8 @@ time point.  We can also specify the time points to predict the effect
 size at:
 
 ```{r}
-fitted_beta_new <- predict(fash_fit1_adj, index = detected_indices1[1], smooth_var = seq(0, 16, length.out = 100))
+fitted_beta_new <- predict(fash_fit1_adj, index = detected_indices1[1],
+                           smooth_var = seq(0, 16, length.out = 100))
 head(fitted_beta_new)
 ```
 
