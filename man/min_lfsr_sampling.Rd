@@ -36,7 +36,7 @@ A data frame containing:
 \description{
 This function computes the minimum local false sign rate (LFSR) for each dataset in a \code{fash} object.
 It estimates the probability that the sign of the effect is positive or negative at each x value
-and returns a ranked data frame.
+and returns a data frame.
 }
 \examples{
 # Example fash object (assuming it has been fitted)

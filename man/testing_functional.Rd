@@ -39,7 +39,7 @@ A data frame containing:
 }
 \description{
 This function applies a user-specified functional to posterior samples from a \code{fash} object, calculates the
-local false sign rate (LFSR) for each dataset, and returns a ranked data frame. The computation can be
+local false sign rate (LFSR) for each dataset, and returns a data frame. The computation can be
 parallelized if \code{num_cores > 1}.
 }
 \examples{
