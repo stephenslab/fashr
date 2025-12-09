@@ -327,7 +327,8 @@ polygon(c(fitted_beta_new$x, rev(fitted_beta_new$x)), c(fitted_beta_new$lower, r
 ```
 
 Alternatively, one can generate this figure more simply through `plot`
-and specify `plot_type = "function"`:
+and specify `plot_type = "function"`. The true effect (that is, the
+effect used to simulate the data) is shown as a dashed line.
 
 ```{r, fig.height=4, fig.width=4}
 plot(fash_fit1_adj, selected_unit = detected_indices1[1],
@@ -475,12 +476,12 @@ The empirical false discovery rate among the detected eQTLs is:
 sum(labels[detected_indices2] != "C")/length(detected_indices2)
 ```
 
-Visualize the posterior of the first detected nonlinear dynamic eQTL:
+Visualize the posterior of the first detected nonlinear dynamic
+eQTL. The true effect is shown as a dashed line.
 
 ```{r, fig.height=4, fig.width=4}
-plot(fash_fit2_adj, selected_unit = detected_indices2[1], plot_type = "function")
+selected_index <- detected_indices2[1]
+plot(fash_fit2_adj, selected_unit = selected_index, plot_type = "function")
+lines(datasets[[selected_index]]$x, datasets[[selected_index]]$truef,
+      col = "black", lwd = 1, lty = "dashed")
 ```
-
-
-
-
