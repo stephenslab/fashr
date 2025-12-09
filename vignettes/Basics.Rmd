@@ -53,14 +53,20 @@ In the following section, we illustrate this with simulated data.
 
 ## Setup
 
-We consider effect size estimates for $N = 100$ eQTLs measured from day $t = 1$ to day $t = 16$:
+We consider effect size estimates for $N = 100$ eQTLs measured from
+day $t = 1$ to day $t = 16$:
 
-- There are 50 eQTLs that are non-dynamic, that is, their effect sizes remain constant over time (Category A).
-- There are 30 eQTLs with linear dynamics, that is, their effect sizes change linearly over time (Category B).
-- There are 20 eQTLs with nonlinear dynamics, that is, their effect sizes change nonlinearly over time (Category C).
+- There are 50 eQTLs that are non-dynamic, that is, their effect sizes
+  remain constant over time (Category A).
 
-For each eQTL at each time point, the standard error $s_{ir}$ is randomly drawn from $\{0.05, 0.1, 0.2\}$.
+- There are 30 eQTLs with linear dynamics, that is, their effect sizes
+  change linearly over time (Category B).
 
+- There are 20 eQTLs with nonlinear dynamics, that is, their effect
+  sizes change nonlinearly over time (Category C).
+
+For each eQTL at each time point, the standard error $s_{ir}$ is
+randomly drawn from $\{0.05, 0.1, 0.2\}$.
 
 ```{r, fig.height=8, fig.width=7}
 set.seed(1)
@@ -109,8 +115,6 @@ for(i in indices_C[1:3]){
   plot(datasets[[i]]$x, datasets[[i]]$y, type = "p", col = "black", lwd = 2, xlab = "time", ylab = "effect", ylim = c(-1.5, 1.5), main = paste("Category C: ", i))
   lines(datasets[[i]]$x, datasets[[i]]$truef, col = "red", lwd = 1)
 }
-
-par(mfrow = c(1, 1))
 ```
 
 Let's take a look at the data structure:
@@ -240,14 +244,16 @@ structure plot:
 plot(fash_fit1_adj, plot_type = "structure", discrete = TRUE)
 ```
 
-We could test $H_0: \beta_i(t) \in S_0$ at a given FDR level (specifying `alpha = 0.1`):
+We could test $H_0: \beta_i(t) \in S_0$ at a given FDR level
+(specifying `alpha = 0.1`):
 
 ```{r, fig.height=4, fig.width=4}
 fdr_result1_adj <- fdr_control(fash_fit1_adj, alpha = 0.1, plot = TRUE)
 ```
 
-However, we in general recommend using lfdr as the significance measure instead of FDR.
-Here we will use a threshold on lfdr of 0.01 to detect dynamic eQTLs:
+However, we in general recommend using lfdr as the significance
+measure instead of FDR. Here we will use a threshold on lfdr of 0.01
+to detect dynamic eQTLs:
 
 ```{r}
 detected_indices1 <- which(fash_fit1_adj$lfdr < 0.01)
@@ -256,8 +262,8 @@ length(detected_indices1)
 
 This gives us `r length(detected_indices1)` detected dynamic eQTLs.
 
-
-The proportion of true (linear or nonlinear) dynamic eQTLs that are detected is:
+The proportion of true (linear or nonlinear) dynamic eQTLs that are
+detected is:
 
 ```{r}
 sum(labels[detected_indices1] != "A")/(sizeC + sizeB)
@@ -269,23 +275,29 @@ The empirical false discovery rate under this lfdr threshold is:
 sum(labels[detected_indices1] == "A")/length(detected_indices1)
 ```
 
-Let's take a look at the inferred eQTL effect $\beta_i(t)$ for the detected eQTLs. 
-The function `predict` computes the posterior distribution of the effect size $\beta_i(t)$ for a given eQTL $i$, and then either returns the posterior summary or posterior samples, depending on the arguments specified.
+Let's take a look at the inferred eQTL effect $\beta_i(t)$ for the
+detected eQTLs.  The function `predict` computes the posterior
+distribution of the effect size $\beta_i(t)$ for a given eQTL $i$, and
+then either returns the posterior summary or posterior samples,
+depending on the arguments specified.
 
 ```{r}
 fitted_beta <- predict(fash_fit1_adj, index = detected_indices1[1])
 fitted_beta
 ```
 
-By default, `predict` returns the posterior information of the effect size $\beta_i(t)$ for the eQTL specified by `index`, at each observed time point.
-We can also specify the time points to predict the effect size at:
+By default, `predict` returns the posterior information of the effect
+size $\beta_i(t)$ for the eQTL specified by `index`, at each observed
+time point.  We can also specify the time points to predict the effect
+size at:
 
 ```{r}
 fitted_beta_new <- predict(fash_fit1_adj, index = detected_indices1[1], smooth_var = seq(0, 16, length.out = 100))
 head(fitted_beta_new)
 ```
 
-It is also possible to store M posterior samples rather than the posterior summary:
+It is also possible to store M posterior samples rather than the
+posterior summary:
 
 ```{r}
 fitted_beta_samples <- predict(fash_fit1_adj, index = detected_indices1[1], 
@@ -300,7 +312,6 @@ Let's plot the inferred effect size for the first detected eQTL:
 selected_index <- detected_indices1[1]
 plot(datasets[[selected_index]]$x, datasets[[selected_index]]$y, type = "p", col = "black", lwd = 2, xlab = "Time", ylab = "Effect Size")
 lines(fitted_beta_new$x, fitted_beta_new$mean, col = "red", lwd = 2)
-lines(datasets[[selected_index]]$x, datasets[[selected_index]]$truef, col = "black", lwd = 1, lty = 2)
 # plus minus sd for each observation
   arrows(
     datasets[[selected_index]]$x,
@@ -315,19 +326,26 @@ lines(datasets[[selected_index]]$x, datasets[[selected_index]]$truef, col = "bla
 polygon(c(fitted_beta_new$x, rev(fitted_beta_new$x)), c(fitted_beta_new$lower, rev(fitted_beta_new$upper)), col = rgb(1, 0, 0, 0.2), border = NA)
 ```
 
-Alternatively, one can generate this figure more simply through `plot` and specify `plot_type = "function"`:
+Alternatively, one can generate this figure more simply through `plot`
+and specify `plot_type = "function"`:
 
 ```{r, fig.height=4, fig.width=4}
-plot(fash_fit1_adj, selected_unit = detected_indices1[1], plot_type = "function")
+plot(fash_fit1_adj, selected_unit = detected_indices1[1],
+     plot_type = "function")
+lines(datasets[[selected_index]]$x, datasets[[selected_index]]$truef,
+      col = "black", lwd = 1, lty = "dashed")
 ```
 
+We might also be interested in testing whether $H_0:
+\mathcal{F}(\beta_j(t)) = 0$ for some functional $\mathcal{F}$.  For
+example, we might be interested in detecting dynamic eQTLs whose
+maximum effect in the first 8 days is larger than their maximum effect
+in the last 8 days, so $\mathcal{F}(\beta_j(t)) = \max_{t \in [1,8]}
+\beta_j(t) - \max_{t \in [9,16]} \beta_j(t)$. For this type of
+problem, we could compute the local false sign rate (lfsr) for each
+eQTL $j$ using the function `testing_functional()`:
 
-We might also be interested in testing whether $H_0: \mathcal{F}(\beta_j(t)) = 0$ for some functional $\mathcal{F}$.
-For example, we might be interested in detecting dynamic eQTLs whose maximum effect in the first 8 days is larger than their maximum effect in the last 8 days, so $\mathcal{F}(\beta_j(t)) = \max_{t \in [1,8]} \beta_j(t) - \max_{t \in [9,16]} \beta_j(t)$.
-
-For this type of problem, we could compute the local false sign rate (lfsr) for each eQTL $j$ using the function `testing_functional()`:
-
-```{r}
+```{r, results="hide"}
 evaluations <- seq(1, 16, length.out = 100)
 functional_F <- function(x){
   max_first_half <- max(x[evaluations <= 8])
@@ -344,20 +362,19 @@ lfsr_result <- testing_functional(
 
 Visualize the lfsr:
 
-```{r}
+```{r, fig.height=2.5, fig.width=7}
 par(mfrow = c(1,3))
 lfsr_result <- lfsr_result[order(lfsr_result$indices),]
 hist(lfsr_result[indices_A,"lfsr"],n = 16,main = "A",xlab = "lfsr")
 hist(lfsr_result[indices_B,"lfsr"],n = 16,main = "B",xlab = "lfsr")
 hist(lfsr_result[indices_C,"lfsr"],n = 16,main = "C",xlab = "lfsr")
-par(mfrow = c(1,1))
 ```
 
-
 We can also use this approach for other types of hypothesis testing.  
-For example, we could examine how many eQTLs show a significant switch of sign, defined as
+For example, we could examine how many eQTLs show a significant switch
+of sign:
 
-\[
+$$
 \mathcal{F}(\beta_j)
 =
 \min\left\{
@@ -365,18 +382,20 @@ For example, we could examine how many eQTLs show a significant switch of sign, 
 \max_{0 \le t \le 15}\beta^{-}(t)
 \right\}
 - 0.25.
-\]
+$$
 
 We then compute the local false sign rate (lfsr) as
 
-\[
+$$
 p\!\left(\mathcal{F}(\beta_j) \le 0 \mid \hat{\boldsymbol{\beta}}_j,\; \hat{\boldsymbol{\pi}} \right).
-\]
+$$
 
-Here, \(\beta^{+}(t) = \max(\beta(t), 0)\) and \(\beta^{-}(t) = \max(-\beta(t), 0)\).  
-An eQTL belongs to this category if its maximal difference in effect size across the full genotype dosage range (from 0 to 2) is at least 1.
+Here, $\beta^{+}(t) = \max(\beta(t), 0)$ and $\beta^{-}(t) =
+\max(-\beta(t), 0)$. An eQTL belongs to this category if its maximal
+difference in effect size across the full genotype dosage range (from
+0 to 2) is at least 1.
 
-```{r}
+```{r, results="hide"}
 functional_switch <- function(x){
   x_pos <- x[x > 0]
   x_neg <- x[x < 0]
@@ -394,27 +413,27 @@ lfsr_switch <- testing_functional(
 )
 ```
 
-
 Visualize the lfsr:
 
-```{r}
+```{r, fig.height=2.5, fig.width=7}
 par(mfrow = c(1,3))
 lfsr_switch <- lfsr_switch[order(lfsr_switch$indices),]
 hist(lfsr_switch[indices_A,"lfsr"],n = 16,main = "A",xlab = "lfsr")
 hist(lfsr_switch[indices_B,"lfsr"],n = 16,main = "B",xlab = "lfsr")
 hist(lfsr_switch[indices_C,"lfsr"],n = 16,main = "C",xlab = "lfsr")
+```
+
+An example of an eQTL detected to have a significant switch of sign at
+lfsr < 0.01:
+
+```{r, fig.height=4, fig.width=4}
 par(mfrow = c(1,1))
-```
-
-An example of an eQTL detected to have a significant switch of sign at lfsr < 0.01:
-
-```{r}
 detected_switch <- lfsr_switch$indices[lfsr_switch$lfsr < 0.01]
-plot(fash_fit1_adj, selected_unit = detected_switch[1], plot_type = "function")
+plot(fash_fit1_adj, selected_unit = detected_switch[1],
+     plot_type = "function")
 ```
 
-
-### Testing Nonlinear Dynamic
+### Testing Nonlinear Dynamic eQTLs
 
 Next, we aim to detect dynamic eQTLs with nonlinear dynamics (Category C).
 
@@ -424,12 +443,12 @@ In this case, we specify the base model $S_0 = {\beta(t) = c + bt \mid c, b \in 
 fash_fit2 <- fash(Y = "y", smooth_var = "x", S = "sd", data_list = datasets, order = 2)
 ```
 
-Again, to encourage more conservative inference, we recommend applying the BF-based adjustment to the fitted FASH prior:
+Again, to encourage more conservative inference, we recommend applying
+the BF-based adjustment to the fitted FASH prior:
 
 ```{r}
 fash_fit2_adj <- BF_update(fash_fit2)
 ```
-
 
 Visualize the prior before and after adjustment:
 
@@ -437,8 +456,6 @@ Visualize the prior before and after adjustment:
 visualize_fash_prior(fash_fit2, constraints = "initial")
 visualize_fash_prior(fash_fit2_adj, constraints = "initial")
 ```
-
-
 
 We will apply the same lfdr threshold to detect nonlinear dynamic eQTLs:
 
