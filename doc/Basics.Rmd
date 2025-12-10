@@ -1,5 +1,5 @@
 ---
-title: "Basic Usage of `fashr`"
+title: "Basic Usage of fashr"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Basics}
@@ -7,154 +7,69 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 ```{r setup}
-knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
+knitr::opts_chunk$set(fig.width = 8, fig.height = 6,comment = "#",
+                      collapse = TRUE,results = "hold",
+					  fig.align = "center")
 library(fashr)
+library(ggplot2)
 ```
 
-```{r echo=FALSE}
-### Write a function, to simulate a dataset with size n, given a function g
-simulate_data <- function(g, sd=0.1){
-  x <- 1:16
-  # simulate sd from sampling from sd with replacement
-  sd <- sample(x = sd, size = length(x), replace = TRUE)
-  y <- g(x) + rnorm(n = length(x), sd = sd, mean = 0)
-  return(data.frame(x = x, y = y, truef = g(x), sd = sd))
-}
+## Overview
 
-### Write a function, to simulate a random function from IWP
-simulate_nonlinear_function <- function(n_basis = 20, sd_function = 1, sd_poly = 0.1, p = 1, pred_step = 16) {
-  if(n_basis < 3) stop("n_basis must be greater than 3")
-  # Define the range and knots for the B-spline basis
-  x_min <- 0
-  x_max <- 16
+Suppose we have $N$ sets of eQTLs. The effect size estimate for the $i$th eQTL at time $t_{ir}$, where $r \in \{1, \ldots, R_i\}$, is denoted by $\hat{\beta}_i(t_{ir})$.
+Given the true effect $\beta_i(t_{ir})$, the observed estimate is assumed to follow
+$$
+\hat{\beta}_i(t_{ir}) \mid \beta_i(t_{ir}) \overset{ind}{\sim} \mathcal{N}(\beta_i(t_{ir}), s_{ir}^2),
+$$
+where $s_{ir}$ denotes the standard error at time $t_{ir}$.
+Let $\boldsymbol{\hat{\beta}}_i = [\hat{\beta}_i(t_{i1}), \ldots, \hat{\beta}_i(t_{iR_i})] \in \mathbb{R}^{R_i}$ and $\boldsymbol{s}_i = [s_{i1}, \ldots, s_{iR_i}] \in \mathbb{R}^{R_i}$ denote the vectors of effect size estimates and standard errors for the $i$th eQTL, respectively. 
 
-  # Generate equally spaced knots within the range [x_min, x_max]
-  knots <- seq(x_min, x_max, length.out = n_basis - 3)
+The goal of `fashr` is to perform functional adaptive shrinkage (FASH) for inferring the posterior distribution of the effect size function $\beta_i(t)$, given the observed data $\boldsymbol{\hat{\beta}}_i$ and $\boldsymbol{s}_i$.
 
-  # Generate random weights for the basis functions
-  sd_function <- sd_function/sqrt((pred_step^((2 * p) - 1)) / (((2 * p) - 1) * (factorial(p - 1)^2)))
-  prec_mat <- (1/sd_function^2) * BayesGP:::compute_weights_precision_helper(knots)
-  weights <- as.vector(LaplacesDemon::rmvnp(n = 1, mu = rep(0, ncol(prec_mat)), Omega = prec_mat))
-  # Generate random weights for the linear functions
-  beta_vec <- rnorm(n = p, mean = 0, sd = sd_poly)
+FASH assumes that all $\beta_i(t)$ are i.i.d. draws from a common prior $g_\beta$. 
+The prior $g_\beta$ has the form of a finite mixture of Gaussian processes (GPs):
+$$
+g_\beta \mid \boldsymbol{\pi} = \sum_{k=0}^{K} \pi_k \, \text{GP}_k.
+$$
+Each GP component $\text{GP}_k$ is specified via the differential equation: if $\beta(t) \sim \text{GP}_k$, then
+$$
+L\beta(t) = \sigma_k W(t),
+$$
+where $W(t)$ is a Gaussian white noise process and $L$ is a known $p$th-order linear differential operator. The standard deviation parameter $\sigma_k$ determines how much $\beta(t)$ can deviate from the base model, defined as the null space $S_0 = \text{Null}\{L\}$.
 
-  # Return a function that evaluates the spline at new x values
-  function(x_new) {
-    # Create the B-spline basis for the new x values using the predefined knots
-    spline_new <- BayesGP:::local_poly_helper(knots = knots, refined_x = x_new, p = p)
-    x_new_design <- BayesGP:::global_poly_helper(x = x_new, p = p)
-    # Return the function
-    return(x_new_design %*% beta_vec + as.vector(spline_new %*% weights))
+Given a grid of $\{\sigma_1, ..., \sigma_K\}$, the prior mixing weights $\hat{\boldsymbol{\pi}}$ are estimated by maximizing the marginal likelihood of the observed effect size estimates:
+$$
+\hat{\boldsymbol{\pi}} = (\hat{\pi}_1, ..., \hat{\pi}_K) = \arg\max_{\boldsymbol{\pi}} \sum_{i=1}^{N} \log\left(\sum_{k=0}^{K} \pi_k \mathbf{L}_{ik}\right),
+$$
+where $\mathbf{L}_{ik}$ denotes the marginal likelihood of $\boldsymbol{\hat{\beta}}_i$ under the $k$th GP component.
+Based on the estimated prior $\hat{g}_\beta$, the posterior distribution for $\beta_i(t)$ can be computed as:
+$$
+p(\beta_i(t) \mid \boldsymbol{\hat{\beta}}_i, \hat{\boldsymbol{\pi}}) = \sum_{k=0}^{K} \tilde{\pi}_k \, p_k(\beta_i(t) \mid \boldsymbol{\hat{\beta}}_i),
+$$
+where $p_k(\beta_i(t) \mid \boldsymbol{\hat{\beta}}_i)$ is the posterior distribution under the $k$th GP component.
 
-  }
-}
+In the following section, we illustrate this with simulated data.
 
-### Write a function, to simulate a random function as g using constant and linear function
-simulate_linear_function <- function(sd_poly = 1, pred_step = 16){
-  beta0 <- rnorm(1, mean = 0, sd = sd_poly)
-  beta1 <- rnorm(1, mean = 0, sd = sd_poly/pred_step)
-  function(x_new) {
-    return(beta0 + beta1 * x_new)
-  }
-}
+## Setup
 
-### Write a function, to simulate a random function as g using constant, linear and quadratic function
-simulate_quadratic_function <- function(sd_poly = 1){
-  beta0 <- rnorm(1, mean = 0, sd = sd_poly)
-  beta1 <- rnorm(1, mean = 0, sd = sd_poly)
-  beta2 <- rnorm(1, mean = 0, sd = sd_poly)
-  function(x_new) {
-    return(beta0 + beta1 * x_new + beta2 * x_new^2)
-  }
-}
+We consider effect size estimates for $N = 100$ eQTLs measured from
+day $t = 1$ to day $t = 16$:
 
-### Write a function, to simulate a nondynamic function as g using constant function
-simulate_nondynamic_function <- function(sd_poly = 1){
-  beta0 <- rnorm(1, mean = 0, sd = sd_poly)
-  function(x_new) {
-    return(beta0)
-  }
-}
+- There are 50 eQTLs that are non-dynamic, that is, their effect sizes
+  remain constant over time (Category A).
 
-### simulate process: first draw a random function g, then draw a dataset from g
-simulate_process <- function(n_basis = 50, sd_fun = 1, sd = 0.1, sd_poly = 0.1, type = "nonlinear", p = 1, pred_step = 16, normalize = FALSE){
-  if(type == "linear"){
-    g <- simulate_linear_function(sd_poly = sd_poly)
-  }
-  else if(type == "quadratic"){
-    g <- simulate_quadratic_function(sd_poly = sd_poly)
-  }
-  else if(type == "nonlinear") {
-    g <- simulate_nonlinear_function(n_basis = n_basis, sd_function = sd_fun, sd_poly = sd_poly, p = p, pred_step = pred_step)
-  }
-  else if(type == "nondynamic") {
-    g <- simulate_nondynamic_function(sd_poly = sd_poly)
-  }
-  else {
-    stop("type must be one of 'linear', 'nonlinear', 'nondynamic'")
-  }
-  
-  if(normalize){
-    x_vec <- seq(0, 16, length.out = 100)
-    if(diff(range(g(x_vec))) > 2){
-      gScale <- function(x) ((g(x) - min(g(x_vec)))/diff(range(g(x_vec))))
-      gFinal <- function(x) gScale(x) - mean(gScale(x_vec))
-    }
-    else{
-      gFinal <- function(x) g(x) - mean(g(x_vec))
-    }
-  }
-  else{
-    gFinal <- g
-  }
-  
-  return(simulate_data(g = gFinal, sd = sd))
-}
+- There are 30 eQTLs with linear dynamics, that is, their effect sizes
+  change linearly over time (Category B).
 
-# Plot power against FDR
-power_versus_fdr <- function(fdr_result, true_indices, fdr_vec = seq(0.01,0.99,by = 0.01), plot = TRUE){
-  power <- numeric(length(fdr_vec))
-  for (i in 1:length(fdr_vec)){
-    significant_indices <- fdr_result$index[fdr_result$FDR < fdr_vec[i]]
-    power[i] <- length(intersect(significant_indices, true_indices))/length(true_indices)
-  }
-  result <- data.frame(fdr = fdr_vec, power = power)
-  if (plot){
-    plot(fdr_vec, power, type = "l", xlab = "FDR", ylab = "Power")
-  }
-  return(result)
-}
+- There are 20 eQTLs with nonlinear dynamics, that is, their effect
+  sizes change nonlinearly over time (Category C).
 
-# Plot calibration of FDR
-calibration_fdr <- function(fdr_result, true_indices, fdr_vec = seq(0.01,0.99,by = 0.01), plot = TRUE){
-  true_discovery_rate <- numeric(length(fdr_vec))
-  for (i in 1:length(fdr_vec)){
-    significant_indices <- fdr_result$index[fdr_result$FDR < fdr_vec[i]]
-    true_discovery_rate[i] <- length(intersect(significant_indices, true_indices))/length(significant_indices)
-  }
-  result <- data.frame(fdr = fdr_vec, Tfdr = (1 - true_discovery_rate))
-  if (plot){
-    plot(Tfdr ~ fdr_vec, type = "l", xlab = "nominal FDR", ylab = "observed FDR", data = result)
-    # add 45 degree line
-    lines(c(0,1), c(0,1), col = "red", lty = 2)
-  }
-  return(result)
-}
-```
+For each eQTL at each time point, the standard error $s_{ir}$ is
+randomly drawn from $\{0.05, 0.1, 0.2\}$.
 
-
-## **Setup**
-
-We consider the effect size estimate of $100$ eQTLs measured in day $t = 1$ to day $t = 16$:
-
-- there are $50$ eQTLs that are not dynamic, i.e., the effect size is constant over time (Category A).
-- there are $30$ eQTLs that are linear dynamic, i.e., the effect size is changing linearly over time (Category B).
-- there are $20$ eQTLs that are non-linear dynamic, i.e., the effect size is changing non-linearly over time (Category C).
-
-```{r echo=FALSE}
-set.seed(1234)
+```{r, fig.height=8, fig.width=7}
+set.seed(1)
 N <- 100
 propA <- 0.5; propB <- 0.3; propC <- 0.2
 sigma_vec <- c(0.05, 0.1, 0.2)
@@ -179,30 +94,39 @@ indices_A <- 1:sizeA
 indices_B <- (sizeA + 1):(sizeA + sizeB)
 indices_C <- (sizeA + sizeB + 1):(sizeA + sizeB + sizeC)
 
+dataset_labels <- rep(as.character(NA),100)
+dataset_labels[indices_A] <- paste0("A",seq(1,length(indices_A)))
+dataset_labels[indices_B] <- paste0("B",seq(1,length(indices_B)))
+dataset_labels[indices_C] <- paste0("C",seq(1,length(indices_C)))
+names(datasets) <- dataset_labels
+
 par(mfrow = c(3, 3))
 for(i in indices_A[1:3]){
-  plot(datasets[[i]]$x, datasets[[i]]$y, type = "p", col = "black", lwd = 2, xlab = "Time", ylab = "Effect Size", ylim = c(-1.5, 1.5), main = paste("Category A: ", i))
+  plot(datasets[[i]]$x, datasets[[i]]$y, type = "p", col = "black", lwd = 2, xlab = "time", ylab = "effect", ylim = c(-1.5, 1.5), main = paste("Category A: ", i))
   lines(datasets[[i]]$x, datasets[[i]]$truef, col = "red", lwd = 1)
 }
 
 for(i in indices_B[1:3]){
-  plot(datasets[[i]]$x, datasets[[i]]$y, type = "p", col = "black", lwd = 2, xlab = "Time", ylab = "Effect Size", ylim = c(-1.5, 1.5), main = paste("Category B: ", i))
+  plot(datasets[[i]]$x, datasets[[i]]$y, type = "p", col = "black", lwd = 2, xlab = "time", ylab = "effect", ylim = c(-1.5, 1.5), main = paste("Category B: ", i))
   lines(datasets[[i]]$x, datasets[[i]]$truef, col = "red", lwd = 1)
 }
 
 for(i in indices_C[1:3]){
-  plot(datasets[[i]]$x, datasets[[i]]$y, type = "p", col = "black", lwd = 2, xlab = "Time", ylab = "Effect Size", ylim = c(-1.5, 1.5), main = paste("Category C: ", i))
+  plot(datasets[[i]]$x, datasets[[i]]$y, type = "p", col = "black", lwd = 2, xlab = "time", ylab = "effect", ylim = c(-1.5, 1.5), main = paste("Category C: ", i))
   lines(datasets[[i]]$x, datasets[[i]]$truef, col = "red", lwd = 1)
 }
-
-par(mfrow = c(1, 1))
 ```
 
 Let's take a look at the data structure:
 
 ```{r}
 length(datasets)
-str(datasets[[1]])
+```
+
+This is the first dataset:
+
+```{r}
+datasets[[1]]
 ```
 
 Take a look at the true label of the datasets:
@@ -211,150 +135,343 @@ Take a look at the true label of the datasets:
 table(labels)
 ```
 
-## **Fitting FASH**
+## Fitting FASH
 
-The default way of fitting FASH is to input the list of datasets (`data_list`), and specify the column names for the effect size (`Y`), the standard deviation of the effect size (`S`), and the time points (`smooth_var`). 
+The main function for fitting FASH is `fash()`. 
+By default, users should provide a list of datasets (`data_list`), and specify the column names for the effect size (`Y`), its standard deviation (`S`), and the time variable (`smooth_var`).
 
-The computation could be paralleled by specifying the number of cores (`num_cores`). Reducing the number of basis functions (`num_basis`) can also greatly speed up the computation. 
+Computation can be parallelized by specifying the number of cores (`num_cores`).  
+Reducing the number of basis functions (`num_basis`) can also improve computational speed.
 
-### **Testing non-linearity**
+The function `fash()` sequentially performs the following key steps:
+
+1. Compute the likelihood matrix
+
+   $$
+   \mathbf{L}_{ik} = p(\hat{\boldsymbol{\beta}}_i \mid \text{GP}_k),
+   $$
+
+   for each eQTL $i$ and each GP component $k$.
+
+2. Estimate the prior mixing weights $\hat{\boldsymbol{\pi}}$ by maximizing the marginal likelihood:
+
+   $$
+   \hat{\boldsymbol{\pi}} = \arg\max_{\boldsymbol{\pi}} \sum_{i=1}^{N} \log\left(\sum_{k=0}^{K} \pi_k \mathbf{L}_{ik}\right).
+   $$
+
+3. Compute the posterior weights for each eQTL $i$ and GP component $k$:
+
+   $$
+   \tilde{\pi}_{ik} = \frac{\pi_k \mathbf{L}_{ik}}{\sum_{j=0}^{K} \pi_j \mathbf{L}_{ij}},
+   $$
+
+   where $\tilde{\pi}_{i0}$ is the local false discovery rate (lfdr) under the null hypothesis $\beta_i(t) \in S_0$.
 
 
-Let's first use the IWP2 model (`order = 2`), and try to detect the dynamic eQTLs with non-linear dynamics (Category C).
+### Testing Dynamic eQTLs
 
-```{r}
-fash_fit <- fashr(Y = "y", smooth_var = "x", S = "sd", data_list = datasets, 
-                  likelihood = "gaussian", order = 2, pred_step = 1,
-                  num_cores = 2, num_basis = 20, grid = seq(0, 1, by = 0.025),
-                  verbose = TRUE)
-fash_fit
+We will apply FASH to identify dynamic eQTLs, including both linear and nonlinear cases (Categories B and C).
+
+In this case, the base model $S_0 = \{\beta(t) = c \mid c \in \mathbb{R}\}$ represents the space of constant functions. 
+We specify $L = \frac{d}{dt}$, which is a first-order differential operator. 
+This choice corresponds to the first Integrated Wiener Process (IWP1) model (`order = 1`).
+
+```{r, results="hide"}
+fash_fit1 <- fash(Y = "y", smooth_var = "x", S = "sd", data_list = datasets, order = 1)
+fash_fit1
 ```
 
-Let's take a look at the estimated prior:
+This is the output of `fash()`:
 
 ```{r}
-fash_fit$prior_weights
+fash_fit1
 ```
+
+Here, the grid of values $\{\sigma_1, \ldots, \sigma_K\}$ is specified using the `grid` argument. Rather than being defined on the original scale, the `grid` is specified on a slightly transformed scale for easier interpretation.
+
+Specifically, given a prediction step size $h$ (`pred_step`), each grid point is defined as $c_h \sigma_k$, where $c_h$ is a positive scaling constant that depends only on $h$ and $L$. This scaling ensures that $c_h \sigma_k$ can be interpreted as $\text{SD}(\beta(t+h) \mid \beta(s), s < t)$, representing the $h$-step predictive standard deviation (PSD).
+
+In the above example, we started with a default grid of 25 equally spaced PSD values from 0 to 2. After empirical Bayes estimation, the prior weights are nonzero only for 5 of these values. Grid values with zero prior weight are considered trivial and are removed automatically.
+
+Let's take a look at the estimated prior $\hat{g}$:
+
+```{r}
+fash_fit1$prior_weights
+```
+
+We can also visualize the fitted prior in FASH by looking at some sample paths. 
+As the baseline component is often diffuse, we can visualize the prior sample paths under two different constraints: (1) `initial` constraint, which fixes each sample path (and its derivatives) to have zero initial values; (2) `orthogonal` constraint, which forces each sample path to be orthogonal to the null space $S_0$.
+
+```{r, fig.height=3.5, fig.width=4}
+psd_colors <- c("#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00", "#ffff33", "#a65628")
+visualize_fash_prior(fash_fit1, constraints = "initial") +
+  scale_color_manual(values = psd_colors)
+visualize_fash_prior(fash_fit1, constraints = "orthogonal") +
+  scale_color_manual(values = psd_colors)
+```
+
+
+To make the inference more conservative, we could adjust the fitted FASH prior using the Bayes Factor (BF)-based adjustment:
+
+```{r}
+fash_fit1_adj <- BF_update(fash_fit1)
+fash_fit1_adj$prior_weights
+```
+Visualize the adjusted prior:
+
+```{r, fig.height=3.5, fig.width=4}
+visualize_fash_prior(fash_fit1_adj, constraints = "initial") +
+  scale_color_manual(values = psd_colors)
+visualize_fash_prior(fash_fit1_adj, constraints = "orthogonal") +
+  scale_color_manual(values = psd_colors)
+```
+
+
 
 We can take a look at their posterior weights in each GP component:
 
-```{r}
-plot(fash_fit)
+```{r, fig.height=4.5, fig.width=3.5}
+plot(fash_fit1_adj, plot_type = "heatmap",
+     selected_indices = c(paste0("A",1:5),
+	                      paste0("B",1:5),
+						  paste0("C",1:5)))
 ```
 
-The `plot` function automatically plots the posterior weights of the GP components, with darker colors indicating larger PSD (e.g. larger $\sigma_k$). 
-The observations are ordered based on posterior mean of the PSD (i.e. $\sigma_k$) in descending order from top to bottom. 
-We could also customize the plot in various different ways:
+Besides the heatmap plot, we could also visualize the result using a
+structure plot:
 
-```{r}
-plot(fash_fit, discrete = TRUE, ordering = "lfdr")
+```{r, fig.height=4, fig.width=5}
+plot(fash_fit1_adj, plot_type = "structure", discrete = TRUE)
 ```
 
-The above structure plot ignores the continuous structure of the PSD (`discrete = TRUE`) and orders the observations based on the local false discovery rate (LFDR) of $p(\beta_i(t)\in S_0|\boldsymbol{Y}, \hat{g})$.
-In this case, since the order of IWP is `p = 2`, the base model $S_0$ denotes the space of linear function.
+We could test $H_0: \beta_i(t) \in S_0$ at a given FDR level
+(specifying `alpha = 0.1`):
 
-
-We can then use `fdr_control` to test the null hypothesis that $H_0: \beta_i(t) \in S_0$ at a given FDR level:
-
-```{r}
-fdr_result <- fdr_control(fash_fit, alpha = 0.1, plot = TRUE)
+```{r, fig.height=4, fig.width=4}
+fdr_result1_adj <- fdr_control(fash_fit1_adj, alpha = 0.1, plot = TRUE)
 ```
 
-
-There are 21 eQTLs flagged as significant at FDR level 0.1. We can take out the indices of these eQTLs:
+However, we in general recommend using lfdr as the significance
+measure instead of FDR. Here we will use a threshold on lfdr of 0.01
+to detect dynamic eQTLs:
 
 ```{r}
-detected_indices <- fdr_result$fdr_results$index[fdr_result$fdr_results$FDR < 0.1]
+detected_indices1 <- which(fash_fit1_adj$lfdr < 0.01)
+length(detected_indices1)
 ```
 
+This gives us `r length(detected_indices1)` detected dynamic eQTLs.
 
-How many of the true (non-linear) dynamic eQTLs are detected?
+The proportion of true (linear or nonlinear) dynamic eQTLs that are
+detected is:
 
 ```{r}
-sum(labels[detected_indices] == "C")/sizeC
+sum(labels[detected_indices1] != "A")/(sizeC + sizeB)
 ```
 
-What is the false discovery rate?
+The empirical false discovery rate under this lfdr threshold is:
 
 ```{r}
-sum(labels[detected_indices] != "C")/length(detected_indices)
+sum(labels[detected_indices1] == "A")/length(detected_indices1)
 ```
 
-Let's take a look at the inferred eQTL effect $\beta_i(t)$ for the detected eQTLs. 
+Let's take a look at the inferred eQTL effect $\beta_i(t)$ for the
+detected eQTLs.  The function `predict` computes the posterior
+distribution of the effect size $\beta_i(t)$ for a given eQTL $i$, and
+then either returns the posterior summary or posterior samples,
+depending on the arguments specified.
 
 ```{r}
-fitted_beta <- predict(fash_fit, index = detected_indices[1])
-str(fitted_beta)
+fitted_beta <- predict(fash_fit1_adj, index = detected_indices1[1])
+fitted_beta
 ```
 
-The `predict` function returns the posterior information of the effect size $\beta_i(t)$ for the eQTL specified by `index`.
-By default, it returns the posterior of the effect size at each observed time point.
-We can also specify the time points to predict the effect size at:
+By default, `predict` returns the posterior information of the effect
+size $\beta_i(t)$ for the eQTL specified by `index`, at each observed
+time point.  We can also specify the time points to predict the effect
+size at:
 
 ```{r}
-fitted_beta_new <- predict(fash_fit, index = detected_indices[1], smooth_var = seq(0, 16, length.out = 100))
-str(fitted_beta_new)
+fitted_beta_new <- predict(fash_fit1_adj, index = detected_indices1[1],
+                           smooth_var = seq(0, 16, length.out = 100))
+head(fitted_beta_new)
 ```
 
-It is also possible to store M posterior samples rather than the posterior summary:
+It is also possible to store M posterior samples rather than the
+posterior summary:
 
 ```{r}
-fitted_beta_samples <- predict(fash_fit, index = detected_indices[1], 
+fitted_beta_samples <- predict(fash_fit1_adj, index = detected_indices1[1], 
                                smooth_var = seq(0, 16, length.out = 100), 
                                only.samples = TRUE, M = 50)
 str(fitted_beta_samples)
 ```
 
-Let's plot the inferred effect size for the first detected eQTL:
+Using these results we can visualize, for example, the posterior mean
+effect estimate:
 
 ```{r}
-plot(datasets[[detected_indices[1]]]$x, datasets[[detected_indices[1]]]$y, type = "p", col = "black", lwd = 2, xlab = "Time", ylab = "Effect Size")
-lines(fitted_beta_new$x, fitted_beta_new$mean, col = "red", lwd = 2)
-lines(datasets[[detected_indices[1]]]$x, datasets[[detected_indices[1]]]$truef, col = "black", lwd = 1, lty = 2)
-polygon(c(fitted_beta_new$x, rev(fitted_beta_new$x)), c(fitted_beta_new$lower, rev(fitted_beta_new$upper)), col = rgb(1, 0, 0, 0.2), border = NA)
+plot(fitted_beta_new$x,fitted_beta_new$mean,type = "l",lwd = 2,
+     xlab = "condition",ylab = "function value")
 ```
 
+One can generate a more detailed figure of the posterior simply through `plot`
+and specify `plot_type = "function"`. 
+By default, the figure shows the posterior mean effect (solid line) along with 95% credible bands (shaded area), as well as the raw data points as black dots together with their (+-2) standard errors (black error bars).
+As a comparison, we add the true effect (that is, the effect used to simulate the data) to the figure as a dashed line.
 
-### **Testing dynamic eQTLs**
+```{r, fig.height=4, fig.width=4}
+plot(fash_fit1_adj, selected_unit = detected_indices1[1],
+     plot_type = "function")
+lines(datasets[[detected_indices1[1]]]$x, datasets[[detected_indices1[1]]]$truef,
+      col = "black", lwd = 1, lty = "dashed")
+```
 
-What if we are interested in detecting any dynamic eQTLs, not just the non-linear ones? (i.e., Categories B and C)
+We might also be interested in testing whether $H_0:
+\mathcal{F}(\beta_j(t)) = 0$ for some functional $\mathcal{F}$.  For
+example, we might be interested in detecting dynamic eQTLs whose
+maximum effect in the first 8 days is larger than their maximum effect
+in the last 8 days, so $\mathcal{F}(\beta_j(t)) = \max_{t \in [1,8]}
+\beta_j(t) - \max_{t \in [9,16]} \beta_j(t)$. For this type of
+problem, we could compute the local false sign rate (lfsr) for each
+eQTL $j$ using the function `testing_functional()`:
 
-We can specify the order of the IWP model to be 1, which will setup a base model $S_0$ as the space of constant functions.
+```{r, results="hide"}
+evaluations <- seq(1, 16, length.out = 100)
+functional_F <- function(x){
+  max_first_half <- max(x[evaluations <= 8])
+  max_second_half <- max(x[evaluations > 8])
+  return(max_first_half - max_second_half)
+}
+lfsr_result <- testing_functional(
+  functional = functional_F,
+  fash = fash_fit1_adj,
+  indices = 1:100,
+  smooth_var = evaluations
+)
+```
+
+Visualize the lfsr:
+
+```{r, fig.height=2.5, fig.width=7}
+par(mfrow = c(1,3))
+lfsr_result <- lfsr_result[order(lfsr_result$indices),]
+hist(lfsr_result[indices_A,"lfsr"],n = 16,main = "A",xlab = "lfsr")
+hist(lfsr_result[indices_B,"lfsr"],n = 16,main = "B",xlab = "lfsr")
+hist(lfsr_result[indices_C,"lfsr"],n = 16,main = "C",xlab = "lfsr")
+```
+
+We can also use this approach for other types of hypothesis testing.  
+For example, we could examine how many eQTLs show a significant switch
+of sign:
+
+$$
+\mathcal{F}(\beta_j)
+=
+\min\left\{
+\max_{0 \le t \le 15}\beta^{+}(t), \;
+\max_{0 \le t \le 15}\beta^{-}(t)
+\right\}
+- 0.25.
+$$
+
+We then compute the local false sign rate (lfsr) as
+
+$$
+p\!\left(\mathcal{F}(\beta_j) \le 0 \mid \hat{\boldsymbol{\beta}}_j,\; \hat{\boldsymbol{\pi}} \right).
+$$
+
+Here, $\beta^{+}(t) = \max(\beta(t), 0)$ and $\beta^{-}(t) =
+\max(-\beta(t), 0)$. An eQTL belongs to this category if its maximal
+difference in effect size across the full genotype dosage range (from
+0 to 2) is at least 1.
+
+```{r, results="hide"}
+functional_switch <- function(x){
+  x_pos <- x[x > 0]
+  x_neg <- x[x < 0]
+  if(length(x_pos) == 0 || length(x_neg) == 0){
+    return(0)
+  }
+  min(max(abs(x_pos)), max(abs(x_neg))) - 0.25
+}
+lfsr_switch <- testing_functional(
+  functional = functional_switch,
+  fash = fash_fit1_adj,
+  indices = 1:100,
+  lfsr_cal = function(x) mean(x <= 0),
+  smooth_var = evaluations
+)
+```
+
+Visualize the lfsr:
+
+```{r, fig.height=2.5, fig.width=7}
+par(mfrow = c(1,3))
+lfsr_switch <- lfsr_switch[order(lfsr_switch$indices),]
+hist(lfsr_switch[indices_A,"lfsr"],n = 16,main = "A",xlab = "lfsr")
+hist(lfsr_switch[indices_B,"lfsr"],n = 16,main = "B",xlab = "lfsr")
+hist(lfsr_switch[indices_C,"lfsr"],n = 16,main = "C",xlab = "lfsr")
+```
+
+An example of an eQTL detected to have a significant switch of sign at
+lfsr < 0.01:
+
+```{r, fig.height=4, fig.width=4}
+par(mfrow = c(1,1))
+detected_switch <- lfsr_switch$indices[lfsr_switch$lfsr < 0.01]
+plot(fash_fit1_adj, selected_unit = detected_switch[1],
+     plot_type = "function")
+```
+
+### Testing Nonlinear Dynamic eQTLs
+
+Next, we aim to detect dynamic eQTLs with nonlinear dynamics (Category C).
+
+In this case, we specify the base model $S_0 = {\beta(t) = c + bt \mid c, b \in \mathbb{R}}$ as the space of linear functions. Therefore, we choose $L = \frac{d^2}{dt^2}$, which is a second-order differential operator. This choice corresponds to the second Integrated Wiener Process (IWP2) model (`order = 2`).
+
+```{r, results="hide"}
+fash_fit2 <- fash(Y = "y", smooth_var = "x", S = "sd", data_list = datasets, order = 2)
+```
+
+Again, to encourage more conservative inference, we recommend applying
+the BF-based adjustment to the fitted FASH prior:
 
 ```{r}
-fash_fit_2 <- fashr(Y = "y", smooth_var = "x", S = "sd", data_list = datasets, 
-                  likelihood = "gaussian", order = 1, pred_step = 1,
-                  num_cores = 2, num_basis = 20, grid = seq(0, 1, by = 0.025),
-                  verbose = TRUE)
-fash_fit_2
+fash_fit2_adj <- BF_update(fash_fit2)
 ```
 
-Take a look at the structure plot:
+Visualize the prior before and after adjustment:
+
+```{r, fig.height=3.5, fig.width=4}
+visualize_fash_prior(fash_fit2, constraints = "initial")
+visualize_fash_prior(fash_fit2_adj, constraints = "initial")
+```
+
+We will apply the same lfdr threshold to detect nonlinear dynamic eQTLs:
 
 ```{r}
-plot(fash_fit_2, discrete = TRUE, ordering = "mean")
+detected_indices2 <- which(fash_fit2_adj$lfdr < 0.01)
 ```
 
-
-Let's test the null hypothesis that $H_0: \beta_i(t) \in S_0$ at a given FDR level:
+The proportion of true nonlinear dynamic eQTLs that are detected is:
 
 ```{r}
-fdr_result_2 <- fdr_control(fash_fit_2, alpha = 0.1, plot = TRUE)
-detected_indices_2 <- fdr_result_2$fdr_results$index[fdr_result_2$fdr_results$FDR < 0.1]
+sum(labels[detected_indices2] == "C")/sizeC
 ```
 
-
-
-How many of the true dynamic eQTLs are detected?
+The empirical false discovery rate among the detected eQTLs is:
 
 ```{r}
-sum(labels[detected_indices_2] != "A")/(sizeB + sizeC)
+sum(labels[detected_indices2] != "C")/length(detected_indices2)
 ```
 
-What is the false discovery rate?
+Visualize the posterior of the first detected nonlinear dynamic
+eQTL. The true effect is shown as a dashed line.
 
-```{r}
-sum(labels[detected_indices_2] == "A")/length(detected_indices_2)
+```{r, fig.height=4, fig.width=4}
+selected_index <- detected_indices2[1]
+plot(fash_fit2_adj, selected_unit = selected_index, plot_type = "function")
+lines(datasets[[selected_index]]$x, datasets[[selected_index]]$truef,
+      col = "black", lwd = 1, lty = "dashed")
 ```
-
-

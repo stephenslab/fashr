@@ -306,6 +306,10 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
 #' @param discrete A logical value. If \code{TRUE}, treats PSD values as discrete categories with distinct colors
 #'                 in the structure plot. Ignored if \code{plot_type = "heatmap"} or \code{"function"}.
 #'
+#' @param selected_unit An integer specifying which unit (dataset index) to visualize when \code{plot_type = "function"}.
+#'
+#' @param include_se A logical value. If \code{TRUE}, includes (+-2) standard error bars for the observed data points.
+#'
 #' @param ... Additional arguments passed to \code{plot_heatmap}, \code{fash_structure_plot} or \code{plot_function},
 #'
 #' @return A plot object (typically a \code{ggplot}).
@@ -330,6 +334,7 @@ fdr_control <- function(fash_obj, alpha = 0.05, plot = FALSE, sort = FALSE) {
 plot.fash <- function(x,
                       plot_type = c("heatmap", "structure", "function"),
                       ordering = NULL,
+                      include_se = TRUE,
                       discrete = FALSE,
                       selected_unit = NULL,
                       ...) {
@@ -371,6 +376,7 @@ plot.fash <- function(x,
     return(
       plot_function(
         fash_obj = x,
+        include_se = include_se,
         selected_unit = selected_unit,
         ...
       )
@@ -390,6 +396,7 @@ plot.fash <- function(x,
 #' smoothed posterior mean function and its uncertainty band.
 #'
 #' @param fash_obj A \code{fash} object produced by the \code{fash()} pipeline.
+#' @param include_se Whether to include the (+-2) standard error bars for the observed data points.
 #' @param selected_unit An integer specifying which unit (dataset index)
 #'   to visualize.
 #' @param smooth_var Optional numeric vector giving the values of the
@@ -413,7 +420,7 @@ plot.fash <- function(x,
 #' @importFrom graphics polygon
 #' @importFrom grDevices rgb
 #'
-plot_function <- function(fash_obj, selected_unit, smooth_var = NULL, ...) {
+plot_function <- function(fash_obj, include_se = TRUE, selected_unit, smooth_var = NULL, ...) {
   # Extract dataset
   dataset <- fash_obj$fash_data$data_list[[selected_unit]]
 
@@ -437,6 +444,27 @@ plot_function <- function(fash_obj, selected_unit, smooth_var = NULL, ...) {
     main = paste("Unit", selected_unit),
     ...
   )
+
+  # If include_se is TRUE, add error bars
+  if (include_se) {
+
+    # check if fash_obj$fash_data$S is not NULL
+    if (!is.null(fash_obj$fash_data$S)) {
+      S_vec <- fash_obj$fash_data$S[[selected_unit]]
+    } else if (!is.null(fash_obj$fash_data$Omega)) {
+      # If Omega is provided, compute standard errors from the diagonal of the inverse precision matrix
+      Omega_mat <- fash_obj$fash_data$Omega[[selected_unit]]
+      S_vec <- sqrt(diag(solve(Omega_mat)))
+    } else {
+      stop("Standard errors (S) or precision matrix (Omega) must be provided in the fash object for error bars.")
+    }
+
+    arrows(
+      dataset$x, dataset$y - 2 * S_vec,
+      dataset$x, dataset$y + 2 * S_vec,
+      angle = 90, code = 3, length = 0.05, col = "gray"
+    )
+  }
 
   # Add posterior mean curve
   lines(

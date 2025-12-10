@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.42</span>
       </span>
     </div>
 
@@ -496,7 +496,8 @@ for the eQTL specified by <code>index</code>, at each observed time
 point. We can also specify the time points to predict the effect size
 at:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fitted_beta_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, index <span class="op">=</span> <span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, smooth_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">16</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">fitted_beta_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, index <span class="op">=</span> <span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>                           smooth_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">16</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">)</span></span>
 <span><span class="co">#           x      mean    median     lower     upper</span></span>
 <span><span class="co"># 1 0.0000000 0.5592477 0.5583612 0.4655394 0.6524803</span></span>
@@ -513,32 +514,24 @@ posterior summary:</p>
 <span>                               only.samples <span class="op">=</span> <span class="cn">TRUE</span>, M <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fitted_beta_samples</span><span class="op">)</span></span>
 <span><span class="co">#  num [1:100, 1:50] 0.648 0.648 0.648 0.648 0.648 ...</span></span></code></pre></div>
-<p>Let’s plot the inferred effect size for the first detected eQTL:</p>
+<p>Using these results we can visualize, for example, the posterior mean
+effect estimate:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">selected_index</span> <span class="op">&lt;-</span> <span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span>, type <span class="op">=</span> <span class="st">"p"</span>, col <span class="op">=</span> <span class="st">"black"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, xlab <span class="op">=</span> <span class="st">"Time"</span>, ylab <span class="op">=</span> <span class="st">"Effect Size"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">x</span>, <span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">mean</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co"># plus minus sd for each observation</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/arrows.html" class="external-link">arrows</a></span><span class="op">(</span></span>
-<span>    <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
-<span>    <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">sd</span>,</span>
-<span>    <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
-<span>    <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">sd</span>,</span>
-<span>    length <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>    angle <span class="op">=</span> <span class="fl">90</span>,</span>
-<span>    code <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>    col <span class="op">=</span> <span class="st">"black"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">lower</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">upper</span><span class="op">)</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-20-1.png" width="384" style="display: block; margin: auto;"></p>
-<p>Alternatively, one can generate this figure more simply through
-<code>plot</code> and specify <code>plot_type = "function"</code>. The
-true effect (that is, the effect used to simulate the data) is shown as
-a dashed line.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">x</span>,<span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">mean</span>,type <span class="op">=</span> <span class="st">"l"</span>,lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"condition"</span>,ylab <span class="op">=</span> <span class="st">"function value"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Basics_files/figure-html/unnamed-chunk-20-1.png" width="768" style="display: block; margin: auto;"></p>
+<p>One can generate a more detailed figure of the posterior simply
+through <code>plot</code> and specify
+<code>plot_type = "function"</code>. By default, the figure shows the
+posterior mean effect (solid line) along with 95% credible bands (shaded
+area), as well as the raw data points as black dots together with their
+(+-2) standard errors (black error bars). As a comparison, we add the
+true effect (that is, the effect used to simulate the data) to the
+figure as a dashed line.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, selected_unit <span class="op">=</span> <span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>     plot_type <span class="op">=</span> <span class="st">"function"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">truef</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">[[</span><span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, <span class="va">datasets</span><span class="op">[[</span><span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">truef</span>,</span>
 <span>      col <span class="op">=</span> <span class="st">"black"</span>, lwd <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Basics_files/figure-html/unnamed-chunk-21-1.png" width="384" style="display: block; margin: auto;"></p>
 <p>We might also be interested in testing whether
@@ -596,7 +589,7 @@ p\!\left(\mathcal{F}(\beta_j) \le 0 \mid \hat{\boldsymbol{\beta}}_j,\; \hat{\bol
 <p>Here,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>β</mi><mo>+</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta^{+}(t) = \max(\beta(t), 0)</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>β</mi><mo>−</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta^{-}(t) =
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>β</mi><mo>−</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>−</mi><mi>β</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\beta^{-}(t) =
 \max(-\beta(t), 0)</annotation></semantics></math>. An eQTL belongs to
 this category if its maximal difference in effect size across the full
 genotype dosage range (from 0 to 2) is at least 1.</p>

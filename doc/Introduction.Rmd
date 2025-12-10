@@ -17,7 +17,9 @@ knitr::opts_chunk$set(
 ## Overview
 
 The package \code{fashr} considers the following functional adaptive shrinkage (FASH) scenarios.
-Given $N$ sets of series data: $\boldsymbol{y} = \{y_i(t_j): j\in[n_i]\}_{i=1}^{N}$, where $n_i$ is the length of the $i$-th series, we assume that each series $y_i$ represents $n_i$ measurements over the continuous treatment $t$ at levels $\{t_j\}_{j=1}^{n_i}$.
+Given $N$ sets of series data: $\boldsymbol{y} = \{y_{ij}: j\in[n_i]\}_{i=1}^{N}$, where $n_i$ is the length of the $i$-th series, we assume that each series $\boldsymbol{y}_i = [y_{i1},...,y_{in_i}]^T \in \mathbb{R}^{n_i}$ represents $n_i$ measurements over the continuous treatment $t$ at levels $\boldsymbol{t}_i = [t_{i1},...,t_{in_i}]^T \in \mathbb{R}^{n_i}$.
+Furthermore, we assume each series $\boldsymbol{y}_i$ relates to a smooth function $f_i(t)$, which is the main inferential interest.
+For example, $y_{ij} = f_i(t_{ij}) + \epsilon_{ij}$, where $\epsilon_{ij}$ is the noise term.
 
 Different from traditional smoothing methods that assumes each $f_i(t)$ has a separate prior $g_i$, FASH assumes that all $f_i(t)$ are $iid$ with a common prior $g_f$.
 Generalizing the idea from [Stephens, 2017](https://academic.oup.com/biostatistics/article/18/2/275/2557030?login=true) and [Urbut et al, 2018](https://www.nature.com/articles/s41588-018-0268-8), the prior $g_f$ takes the following form of a finite mixture of Gaussian processes (GP):
@@ -29,6 +31,14 @@ $$g_f = \int(g_f|\boldsymbol{\pi})p(\boldsymbol{\pi})d\boldsymbol{\pi},$$
 FASH optimizes $\hat{\boldsymbol{\pi}}$ by maximizing the marginal likelihood of the data $\boldsymbol{y}$:
 $$\hat{\boldsymbol{\pi}} = \arg\max_{\boldsymbol{\pi}} \sum_{i=1}^{N} \log\left(\sum_{k=0}^{K} \pi_k \mathbf{L}_{ik}\right),$$
 where $\mathbf{L}_{ik}$ denotes the marginal likelihood of the $i$-th series data under the $k$-th GP component.
+
+
+Specifically, the marginal likelihood $\mathbf{L}_{ik}$ is computed as:
+\[
+\mathbf{L}_{ik} = \int p(\boldsymbol{y}_i \mid \boldsymbol{f}_i) \, \mathcal{N}\big(\boldsymbol{f}_i; m_k(\boldsymbol{t}_i), C_k(\boldsymbol{t}_i, \boldsymbol{t}_i)\big) \, d\boldsymbol{f}_i,
+\]
+where \(\boldsymbol{f}_i = [f_i(t_{i1}), \ldots, f_i(t_{in_i})]^T\) denotes the latent function values at the observed treatment levels \(\boldsymbol{t}_i\).
+
 
 Then the prior $g_f$ is determined as:
 $$\hat{g}_f = \int(g_f|\boldsymbol{\pi})\delta_{\hat{\boldsymbol{\pi}}}(\boldsymbol{\pi})d\boldsymbol{\pi} = g_f|\hat{\boldsymbol{\pi}}.$$

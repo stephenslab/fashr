@@ -307,34 +307,23 @@ fitted_beta_samples <- predict(fash_fit1_adj, index = detected_indices1[1],
 str(fitted_beta_samples)
 ```
 
-Let's plot the inferred effect size for the first detected eQTL:
+Using these results we can visualize, for example, the posterior mean
+effect estimate:
 
-```{r, fig.height=4, fig.width=4}
-selected_index <- detected_indices1[1]
-plot(datasets[[selected_index]]$x, datasets[[selected_index]]$y, type = "p", col = "black", lwd = 2, xlab = "Time", ylab = "Effect Size")
-lines(fitted_beta_new$x, fitted_beta_new$mean, col = "red", lwd = 2)
-# plus minus sd for each observation
-  arrows(
-    datasets[[selected_index]]$x,
-    datasets[[selected_index]]$y - 2 * datasets[[selected_index]]$sd,
-    datasets[[selected_index]]$x,
-    datasets[[selected_index]]$y + 2 * datasets[[selected_index]]$sd,
-    length = 0.05,
-    angle = 90,
-    code = 3,
-    col = "black"
-  )
-polygon(c(fitted_beta_new$x, rev(fitted_beta_new$x)), c(fitted_beta_new$lower, rev(fitted_beta_new$upper)), col = rgb(1, 0, 0, 0.2), border = NA)
+```{r}
+plot(fitted_beta_new$x,fitted_beta_new$mean,type = "l",lwd = 2,
+     xlab = "condition",ylab = "function value")
 ```
 
-Alternatively, one can generate this figure more simply through `plot`
-and specify `plot_type = "function"`. The true effect (that is, the
-effect used to simulate the data) is shown as a dashed line.
+One can generate a more detailed figure of the posterior simply through `plot`
+and specify `plot_type = "function"`. 
+By default, the figure shows the posterior mean effect (solid line) along with 95% credible bands (shaded area), as well as the raw data points as black dots together with their (+-2) standard errors (black error bars).
+As a comparison, we add the true effect (that is, the effect used to simulate the data) to the figure as a dashed line.
 
 ```{r, fig.height=4, fig.width=4}
 plot(fash_fit1_adj, selected_unit = detected_indices1[1],
      plot_type = "function")
-lines(datasets[[selected_index]]$x, datasets[[selected_index]]$truef,
+lines(datasets[[detected_indices1[1]]]$x, datasets[[detected_indices1[1]]]$truef,
       col = "black", lwd = 1, lty = "dashed")
 ```
 

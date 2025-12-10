@@ -243,10 +243,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Overview</h2>
 <p>The package considers the following functional adaptive shrinkage
 (FASH) scenarios. Given <span class="math inline">\(N\)</span> sets of
-series data: <span class="math inline">\(\boldsymbol{y} = \{y_i(t_j):
+series data: <span class="math inline">\(\boldsymbol{y} = \{y_{ij}:
 j\in[n_i]\}_{i=1}^{N}\)</span>, where <span class="math inline">\(n_i\)</span> is the length of the <span class="math inline">\(i\)</span>-th series, we assume that each series
-<span class="math inline">\(y_i\)</span> represents <span class="math inline">\(n_i\)</span> measurements over the continuous
-treatment <span class="math inline">\(t\)</span> at levels <span class="math inline">\(\{t_j\}_{j=1}^{n_i}\)</span>.</p>
+<span class="math inline">\(\boldsymbol{y}_i = [y_{i1},...,y_{in_i}]^T
+\in \mathbb{R}^{n_i}\)</span> represents <span class="math inline">\(n_i\)</span> measurements over the continuous
+treatment <span class="math inline">\(t\)</span> at levels <span class="math inline">\(\boldsymbol{t}_i = [t_{i1},...,t_{in_i}]^T \in
+\mathbb{R}^{n_i}\)</span>. Furthermore, we assume each series <span class="math inline">\(\boldsymbol{y}_i\)</span> relates to a smooth
+function <span class="math inline">\(f_i(t)\)</span>, which is the main
+inferential interest. For example, <span class="math inline">\(y_{ij} =
+f_i(t_{ij}) + \epsilon_{ij}\)</span>, where <span class="math inline">\(\epsilon_{ij}\)</span> is the noise term.</p>
 <p>Different from traditional smoothing methods that assumes each <span class="math inline">\(f_i(t)\)</span> has a separate prior <span class="math inline">\(g_i\)</span>, FASH assumes that all <span class="math inline">\(f_i(t)\)</span> are <span class="math inline">\(iid\)</span> with a common prior <span class="math inline">\(g_f\)</span>. Generalizing the idea from <a href="https://academic.oup.com/biostatistics/article/18/2/275/2557030?login=true">Stephens,
 2017</a> and <a href="https://www.nature.com/articles/s41588-018-0268-8">Urbut et al,
 2018</a>, the prior <span class="math inline">\(g_f\)</span> takes the
@@ -264,6 +269,13 @@ marginal likelihood of the data <span class="math inline">\(\boldsymbol{y}\)</sp
 \pi_k \mathbf{L}_{ik}\right),\]</span> where <span class="math inline">\(\mathbf{L}_{ik}\)</span> denotes the marginal
 likelihood of the <span class="math inline">\(i\)</span>-th series data
 under the <span class="math inline">\(k\)</span>-th GP component.</p>
+<p>Specifically, the marginal likelihood <span class="math inline">\(\mathbf{L}_{ik}\)</span> is computed as: <span class="math display">\[
+\mathbf{L}_{ik} = \int p(\boldsymbol{y}_i \mid \boldsymbol{f}_i) \,
+\mathcal{N}\big(\boldsymbol{f}_i; m_k(\boldsymbol{t}_i),
+C_k(\boldsymbol{t}_i, \boldsymbol{t}_i)\big) \, d\boldsymbol{f}_i,
+\]</span> where <span class="math inline">\(\boldsymbol{f}_i =
+[f_i(t_{i1}), \ldots, f_i(t_{in_i})]^T\)</span> denotes the latent
+function values at the observed treatment levels <span class="math inline">\(\boldsymbol{t}_i\)</span>.</p>
 <p>Then the prior <span class="math inline">\(g_f\)</span> is determined
 as: <span class="math display">\[\hat{g}_f =
 \int(g_f|\boldsymbol{\pi})\delta_{\hat{\boldsymbol{\pi}}}(\boldsymbol{\pi})d\boldsymbol{\pi}
