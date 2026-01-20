@@ -736,7 +736,7 @@ testing_functional <- function(functional,
 
   # reorder the data.frame back to original indices
   result_df <- result_df[order(result_df$indices), ]
-  rownames(result_df) <- names(fash$fash_data$data_list)
+  rownames(result_df) <- names(fash$fash_data$data_list)[result_df$indices]
 
   return(result_df)
 }

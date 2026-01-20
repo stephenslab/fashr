@@ -81,6 +81,7 @@
 <span>                      fig.align <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/fashr/" class="external-link">fashr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'ggplot2' was built under R version 4.5.2</span></span></code></pre>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -195,7 +196,7 @@ sizes change nonlinearly over time (Category C).</p></li>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>s</mi><mrow><mi>i</mi><mi>r</mi></mrow></msub><annotation encoding="application/x-tex">s_{ir}</annotation></semantics></math>
 is randomly drawn from
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mn>0.05</mn><mo>,</mo><mn>0.1</mn><mo>,</mo><mn>0.2</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{0.05, 0.1, 0.2\}</annotation></semantics></math>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
 <span><span class="va">propA</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>; <span class="va">propB</span> <span class="op">&lt;-</span> <span class="fl">0.3</span>; <span class="va">propC</span> <span class="op">&lt;-</span> <span class="fl">0.2</span></span>
@@ -242,13 +243,13 @@ is randomly drawn from
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, <span class="va">datasets</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span>, type <span class="op">=</span> <span class="st">"p"</span>, col <span class="op">=</span> <span class="st">"black"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, xlab <span class="op">=</span> <span class="st">"time"</span>, ylab <span class="op">=</span> <span class="st">"effect"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span><span class="op">)</span>, main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Category C: "</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, <span class="va">datasets</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">truef</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-1-1.png" class="r-plt" width="672" style="display: block; margin: auto;"></p>
 <p>Let’s take a look at the data structure:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">)</span></span>
 <span><span class="co"># [1] 100</span></span></code></pre></div>
 <p>This is the first dataset:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">datasets</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#     x            y truef   sd</span></span>
 <span><span class="co"># 1   1 -0.061077677     0 0.20</span></span>
@@ -268,7 +269,7 @@ is randomly drawn from
 <span><span class="co"># 15 15 -0.198935170     0 0.10</span></span>
 <span><span class="co"># 16 16  0.061982575     0 0.10</span></span></code></pre></div>
 <p>Take a look at the true label of the datasets:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">labels</span><span class="op">)</span></span>
 <span><span class="co"># labels</span></span>
 <span><span class="co">#  A  B  C </span></span>
@@ -333,11 +334,11 @@ represents the space of constant functions. We specify
 which is a first-order differential operator. This choice corresponds to
 the first Integrated Wiener Process (IWP1) model
 (<code>order = 1</code>).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fash_fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fash.html">fash</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="st">"y"</span>, smooth_var <span class="op">=</span> <span class="st">"x"</span>, S <span class="op">=</span> <span class="st">"sd"</span>, data_list <span class="op">=</span> <span class="va">datasets</span>, order <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">fash_fit1</span></span></code></pre></div>
 <p>This is the output of <code><a href="../reference/fash.html">fash()</a></code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fash_fit1</span></span>
 <span><span class="co"># Fitted fash Object</span></span>
 <span><span class="co"># -------------------</span></span>
@@ -374,7 +375,7 @@ zero prior weight are considered trivial and are removed
 automatically.</p>
 <p>Let’s take a look at the estimated prior
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>g</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{g}</annotation></semantics></math>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fash_fit1</span><span class="op">$</span><span class="va">prior_weights</span></span>
 <span><span class="co">#          psd prior_weight</span></span>
 <span><span class="co"># 1 0.00000000   0.53042628</span></span>
@@ -392,18 +393,18 @@ derivatives) to have zero initial values; (2) <code>orthogonal</code>
 constraint, which forces each sample path to be orthogonal to the null
 space
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mn>0</mn></msub><annotation encoding="application/x-tex">S_0</annotation></semantics></math>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">psd_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#e41a1c"</span>,<span class="st">"#377eb8"</span>,<span class="st">"#4daf4a"</span>,<span class="st">"#984ea3"</span>,<span class="st">"#ff7f00"</span>, <span class="st">"#ffff33"</span>, <span class="st">"#a65628"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/visualize_fash_prior.html">visualize_fash_prior</a></span><span class="op">(</span><span class="va">fash_fit1</span>, constraints <span class="op">=</span> <span class="st">"initial"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">psd_colors</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-8-1.png" width="384" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p><img src="Basics_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/visualize_fash_prior.html">visualize_fash_prior</a></span><span class="op">(</span><span class="va">fash_fit1</span>, constraints <span class="op">=</span> <span class="st">"orthogonal"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">psd_colors</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-8-2.png" width="384" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-8-2.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
 <p>To make the inference more conservative, we could adjust the fitted
 FASH prior using the Bayes Factor (BF)-based adjustment:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fash_fit1_adj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BF_update.html">BF_update</a></span><span class="op">(</span><span class="va">fash_fit1</span><span class="op">)</span></span>
 <span><span class="va">fash_fit1_adj</span><span class="op">$</span><span class="va">prior_weights</span></span>
 <span><span class="co">#          psd prior_weight</span></span>
@@ -415,49 +416,49 @@ FASH prior using the Bayes Factor (BF)-based adjustment:</p>
 <span><span class="co"># 6 0.25000000   0.03568621</span></span>
 <span><span class="co"># 7 0.29166667   0.06876206</span></span></code></pre></div>
 <p>Visualize the adjusted prior:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/visualize_fash_prior.html">visualize_fash_prior</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, constraints <span class="op">=</span> <span class="st">"initial"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">psd_colors</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-10-1.png" width="384" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p><img src="Basics_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/visualize_fash_prior.html">visualize_fash_prior</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, constraints <span class="op">=</span> <span class="st">"orthogonal"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">psd_colors</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-10-2.png" width="384" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-10-2.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
 <p>We can take a look at their posterior weights in each GP
 component:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, plot_type <span class="op">=</span> <span class="st">"heatmap"</span>,</span>
 <span>     selected_indices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>,</span>
 <span>                          <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"B"</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>,</span>
 <span>                          <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"C"</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-11-1.png" width="336" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" width="336" style="display: block; margin: auto;"></p>
 <p>Besides the heatmap plot, we could also visualize the result using a
 structure plot:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, plot_type <span class="op">=</span> <span class="st">"structure"</span>, discrete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-12-1.png" width="480" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" width="480" style="display: block; margin: auto;"></p>
 <p>We could test
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>0</mn></msub><mo>:</mo><msub><mi>β</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msub><mi>S</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">H_0: \beta_i(t) \in S_0</annotation></semantics></math>
 at a given FDR level (specifying <code>alpha = 0.1</code>):</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdr_result1_adj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdr_control.html">fdr_control</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-13-1.png" width="384" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
 <pre><code><span><span class="co"># 48 datasets are significant at alpha level 0.10. Total datasets tested: 100.</span></span></code></pre>
 <p>However, we in general recommend using lfdr as the significance
 measure instead of FDR. Here we will use a threshold on lfdr of 0.01 to
 detect dynamic eQTLs:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">detected_indices1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span><span class="op">$</span><span class="va">lfdr</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">detected_indices1</span><span class="op">)</span></span>
 <span><span class="co"># [1] 40</span></span></code></pre></div>
 <p>This gives us 40 detected dynamic eQTLs.</p>
 <p>The proportion of true (linear or nonlinear) dynamic eQTLs that are
 detected is:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">labels</span><span class="op">[</span><span class="va">detected_indices1</span><span class="op">]</span> <span class="op">!=</span> <span class="st">"A"</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">sizeC</span> <span class="op">+</span> <span class="va">sizeB</span><span class="op">)</span></span>
 <span><span class="co"># [1] 0.8</span></span></code></pre></div>
 <p>The empirical false discovery rate under this lfdr threshold is:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">labels</span><span class="op">[</span><span class="va">detected_indices1</span><span class="op">]</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">detected_indices1</span><span class="op">)</span></span>
 <span><span class="co"># [1] 0</span></span></code></pre></div>
 <p>Let’s take a look at the inferred eQTL effect
@@ -469,7 +470,7 @@ for a given eQTL
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
 and then either returns the posterior summary or posterior samples,
 depending on the arguments specified.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fitted_beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, index <span class="op">=</span> <span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">fitted_beta</span></span>
 <span><span class="co">#     x        mean      median       lower       upper</span></span>
@@ -495,7 +496,7 @@ the effect size
 for the eQTL specified by <code>index</code>, at each observed time
 point. We can also specify the time points to predict the effect size
 at:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fitted_beta_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, index <span class="op">=</span> <span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>                           smooth_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">16</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">)</span></span>
@@ -508,7 +509,7 @@ at:</p>
 <span><span class="co"># 6 0.8080808 0.5592477 0.5583612 0.4655394 0.6524803</span></span></code></pre></div>
 <p>It is also possible to store M posterior samples rather than the
 posterior summary:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fitted_beta_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, index <span class="op">=</span> <span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, </span>
 <span>                               smooth_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">16</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>, </span>
 <span>                               only.samples <span class="op">=</span> <span class="cn">TRUE</span>, M <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
@@ -516,10 +517,10 @@ posterior summary:</p>
 <span><span class="co">#  num [1:100, 1:50] 0.648 0.648 0.648 0.648 0.648 ...</span></span></code></pre></div>
 <p>Using these results we can visualize, for example, the posterior mean
 effect estimate:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">x</span>,<span class="va">fitted_beta_new</span><span class="op">$</span><span class="va">mean</span>,type <span class="op">=</span> <span class="st">"l"</span>,lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"condition"</span>,ylab <span class="op">=</span> <span class="st">"function value"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-20-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 <p>One can generate a more detailed figure of the posterior simply
 through <code>plot</code> and specify
 <code>plot_type = "function"</code>. By default, the figure shows the
@@ -528,12 +529,12 @@ area), as well as the raw data points as black dots together with their
 (+-2) standard errors (black error bars). As a comparison, we add the
 true effect (that is, the effect used to simulate the data) to the
 figure as a dashed line.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, selected_unit <span class="op">=</span> <span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>     plot_type <span class="op">=</span> <span class="st">"function"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">[[</span><span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, <span class="va">datasets</span><span class="op">[[</span><span class="va">detected_indices1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">truef</span>,</span>
 <span>      col <span class="op">=</span> <span class="st">"black"</span>, lwd <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-21-1.png" width="384" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
 <p>We might also be interested in testing whether
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>0</mn></msub><mo>:</mo><mi>ℱ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">H_0:
 \mathcal{F}(\beta_j(t)) = 0</annotation></semantics></math> for some
@@ -548,7 +549,7 @@ For this type of problem, we could compute the local false sign rate
 (lfsr) for each eQTL
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
 using the function <code><a href="../reference/testing_functional.html">testing_functional()</a></code>:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">evaluations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">16</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">functional_F</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">max_first_half</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">evaluations</span> <span class="op">&lt;=</span> <span class="fl">8</span><span class="op">]</span><span class="op">)</span></span>
@@ -562,13 +563,13 @@ using the function <code><a href="../reference/testing_functional.html">testing_
 <span>  smooth_var <span class="op">=</span> <span class="va">evaluations</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the lfsr:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lfsr_result</span> <span class="op">&lt;-</span> <span class="va">lfsr_result</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">lfsr_result</span><span class="op">$</span><span class="va">indices</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">lfsr_result</span><span class="op">[</span><span class="va">indices_A</span>,<span class="st">"lfsr"</span><span class="op">]</span>,n <span class="op">=</span> <span class="fl">16</span>,main <span class="op">=</span> <span class="st">"A"</span>,xlab <span class="op">=</span> <span class="st">"lfsr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">lfsr_result</span><span class="op">[</span><span class="va">indices_B</span>,<span class="st">"lfsr"</span><span class="op">]</span>,n <span class="op">=</span> <span class="fl">16</span>,main <span class="op">=</span> <span class="st">"B"</span>,xlab <span class="op">=</span> <span class="st">"lfsr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">lfsr_result</span><span class="op">[</span><span class="va">indices_C</span>,<span class="st">"lfsr"</span><span class="op">]</span>,n <span class="op">=</span> <span class="fl">16</span>,main <span class="op">=</span> <span class="st">"C"</span>,xlab <span class="op">=</span> <span class="st">"lfsr"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-23-1.png" class="r-plt" width="672" style="display: block; margin: auto;"></p>
 <p>We can also use this approach for other types of hypothesis
 testing.<br>
 For example, we could examine how many eQTLs show a significant switch
@@ -593,7 +594,7 @@ and
 \max(-\beta(t), 0)</annotation></semantics></math>. An eQTL belongs to
 this category if its maximal difference in effect size across the full
 genotype dosage range (from 0 to 2) is at least 1.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">functional_switch</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">x_pos</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">x</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span></span>
 <span>  <span class="va">x_neg</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">x</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span></span>
@@ -610,21 +611,21 @@ genotype dosage range (from 0 to 2) is at least 1.</p>
 <span>  smooth_var <span class="op">=</span> <span class="va">evaluations</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the lfsr:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">lfsr_switch</span> <span class="op">&lt;-</span> <span class="va">lfsr_switch</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">lfsr_switch</span><span class="op">$</span><span class="va">indices</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">lfsr_switch</span><span class="op">[</span><span class="va">indices_A</span>,<span class="st">"lfsr"</span><span class="op">]</span>,n <span class="op">=</span> <span class="fl">16</span>,main <span class="op">=</span> <span class="st">"A"</span>,xlab <span class="op">=</span> <span class="st">"lfsr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">lfsr_switch</span><span class="op">[</span><span class="va">indices_B</span>,<span class="st">"lfsr"</span><span class="op">]</span>,n <span class="op">=</span> <span class="fl">16</span>,main <span class="op">=</span> <span class="st">"B"</span>,xlab <span class="op">=</span> <span class="st">"lfsr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">lfsr_switch</span><span class="op">[</span><span class="va">indices_C</span>,<span class="st">"lfsr"</span><span class="op">]</span>,n <span class="op">=</span> <span class="fl">16</span>,main <span class="op">=</span> <span class="st">"C"</span>,xlab <span class="op">=</span> <span class="st">"lfsr"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-25-1.png" class="r-plt" width="672" style="display: block; margin: auto;"></p>
 <p>An example of an eQTL detected to have a significant switch of sign
 at lfsr &lt; 0.01:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">detected_switch</span> <span class="op">&lt;-</span> <span class="va">lfsr_switch</span><span class="op">$</span><span class="va">indices</span><span class="op">[</span><span class="va">lfsr_switch</span><span class="op">$</span><span class="va">lfsr</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fash_fit1_adj</span>, selected_unit <span class="op">=</span> <span class="va">detected_switch</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>     plot_type <span class="op">=</span> <span class="st">"function"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-26-1.png" width="384" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-26-1.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="testing-nonlinear-dynamic-eqtls">Testing Nonlinear Dynamic eQTLs<a class="anchor" aria-label="anchor" href="#testing-nonlinear-dynamic-eqtls"></a>
@@ -638,40 +639,40 @@ as the space of linear functions. Therefore, we choose
 which is a second-order differential operator. This choice corresponds
 to the second Integrated Wiener Process (IWP2) model
 (<code>order = 2</code>).</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fash_fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fash.html">fash</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="st">"y"</span>, smooth_var <span class="op">=</span> <span class="st">"x"</span>, S <span class="op">=</span> <span class="st">"sd"</span>, data_list <span class="op">=</span> <span class="va">datasets</span>, order <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>Again, to encourage more conservative inference, we recommend
 applying the BF-based adjustment to the fitted FASH prior:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fash_fit2_adj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BF_update.html">BF_update</a></span><span class="op">(</span><span class="va">fash_fit2</span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the prior before and after adjustment:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/visualize_fash_prior.html">visualize_fash_prior</a></span><span class="op">(</span><span class="va">fash_fit2</span>, constraints <span class="op">=</span> <span class="st">"initial"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-29-1.png" width="384" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/visualize_fash_prior.html">visualize_fash_prior</a></span><span class="op">(</span><span class="va">fash_fit2</span>, constraints <span class="op">=</span> <span class="st">"initial"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Basics_files/figure-html/unnamed-chunk-29-1.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/visualize_fash_prior.html">visualize_fash_prior</a></span><span class="op">(</span><span class="va">fash_fit2_adj</span>, constraints <span class="op">=</span> <span class="st">"initial"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-29-2.png" width="384" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-29-2.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
 <p>We will apply the same lfdr threshold to detect nonlinear dynamic
 eQTLs:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">detected_indices2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">fash_fit2_adj</span><span class="op">$</span><span class="va">lfdr</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span></span></code></pre></div>
 <p>The proportion of true nonlinear dynamic eQTLs that are detected
 is:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">labels</span><span class="op">[</span><span class="va">detected_indices2</span><span class="op">]</span> <span class="op">==</span> <span class="st">"C"</span><span class="op">)</span><span class="op">/</span><span class="va">sizeC</span></span>
 <span><span class="co"># [1] 0.75</span></span></code></pre></div>
 <p>The empirical false discovery rate among the detected eQTLs is:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">labels</span><span class="op">[</span><span class="va">detected_indices2</span><span class="op">]</span> <span class="op">!=</span> <span class="st">"C"</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">detected_indices2</span><span class="op">)</span></span>
 <span><span class="co"># [1] 0</span></span></code></pre></div>
 <p>Visualize the posterior of the first detected nonlinear dynamic eQTL.
 The true effect is shown as a dashed line.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">selected_index</span> <span class="op">&lt;-</span> <span class="va">detected_indices2</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fash_fit2_adj</span>, selected_unit <span class="op">=</span> <span class="va">selected_index</span>, plot_type <span class="op">=</span> <span class="st">"function"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, <span class="va">datasets</span><span class="op">[[</span><span class="va">selected_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">truef</span>,</span>
 <span>      col <span class="op">=</span> <span class="st">"black"</span>, lwd <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Basics_files/figure-html/unnamed-chunk-33-1.png" width="384" style="display: block; margin: auto;"></p>
+<p><img src="Basics_files/figure-html/unnamed-chunk-33-1.png" class="r-plt" width="384" style="display: block; margin: auto;"></p>
 </div>
 </div>
   </div>
@@ -691,7 +692,7 @@ The true effect is shown as a dashed line.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
