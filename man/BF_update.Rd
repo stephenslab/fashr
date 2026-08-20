@@ -4,12 +4,18 @@
 \alias{BF_update}
 \title{Update Prior and Posterior Weights in a FASH Object Using Bayes Factor Control}
 \usage{
-BF_update(fash, plot = FALSE)
+BF_update(fash, plot = FALSE, epsilon = .Machine$double.eps)
 }
 \arguments{
 \item{fash}{A \code{fash} object containing the fitted model and likelihood matrix.}
 
 \item{plot}{A logical value. If \code{TRUE}, generates diagnostic plots for BF control.}
+
+\item{epsilon}{A small non-negative numeric value passed to \code{BF_control},
+making the threshold selection strict: the BF threshold \eqn{c^*} is the
+smallest \eqn{c} such that \eqn{E(BF \mid BF \le c) \ge 1 + \epsilon}.
+Defaults to \code{.Machine$double.eps}, which leaves the results
+essentially unchanged while ruling out selection at exact equality.}
 }
 \value{
 The updated \code{fash} object with the following components updated:
@@ -17,7 +23,7 @@ The updated \code{fash} object with the following components updated:
   \item{prior_weights}{Updated prior mixture weights reflecting the estimated \eqn{\pi_0}.}
   \item{posterior_weights}{Updated posterior mixture weights for each dataset.}
   \item{BF}{Computed Bayes Factors for each dataset.}
-  \item{lfdr}{Local False Discovery Rate (LFDR), extracted as the first column of `posterior_weights`.}
+  \item{lfdr}{Local False Discovery Rate (LFDR), the posterior weight of the null component.}
 }
 }
 \description{
@@ -29,7 +35,10 @@ the proportion of null datasets (\eqn{\pi_0}), and updates the model accordingly
 This function performs the following steps:
 \enumerate{
   \item \bold{Computes Bayes Factors (BF)}: The BF is calculated as the ratio of likelihood under
-        the alternative hypothesis to the likelihood under the null hypothesis.
+        the alternative hypothesis to the likelihood under the null hypothesis. The weights of
+        the alternative components are taken from the prior weights already estimated in the
+        \code{fash} object (so that, e.g., a Dirichlet penalty specified via \code{penalty > 1}
+        is respected), rather than being re-estimated.
   \item \bold{Estimates \eqn{\pi_0}}: The function applies BF-based control to estimate
         the proportion of null datasets.
   \item \bold{Updates prior weights}: The function updates the prior mixture weights to reflect

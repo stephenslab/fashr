@@ -4,10 +4,18 @@
 \alias{plot_function}
 \title{Plot Fitted Effect Function for a Selected Unit}
 \usage{
-plot_function(fash_obj, selected_unit, smooth_var = NULL, ...)
+plot_function(
+  fash_obj,
+  include_se = TRUE,
+  selected_unit,
+  smooth_var = NULL,
+  ...
+)
 }
 \arguments{
 \item{fash_obj}{A \code{fash} object produced by the \code{fash()} pipeline.}
+
+\item{include_se}{Whether to include the (+-2) standard error bars for the observed data points.}
 
 \item{selected_unit}{An integer specifying which unit (dataset index)
 to visualize.}

@@ -37,7 +37,7 @@
 #'
 #' @keywords internal
 #'
-fash_fit_once <- function(data_i, refined_x, M, psd_iwp, Si = NULL, Omegai = NULL, num_basis = 30, betaprec = 1e-6, order = 2, pred_step = 1, likelihood, deriv = 0) {
+fash_fit_once <- function(data_i, refined_x, M, psd_iwp, Si = NULL, Omegai = NULL, num_basis = 30, betaprec = 1e-6, order = 1, pred_step = 1, likelihood, deriv = 0) {
 
   # return error if deriv is not strictly smaller than order
   if(deriv >= order){
@@ -192,7 +192,7 @@ fash_fit_once <- function(data_i, refined_x, M, psd_iwp, Si = NULL, Omegai = NUL
 #' @keywords internal
 #'
 fash_bma_sampling <- function(data_i, posterior_weights, psd_values, refined_x, M, Si = NULL, Omegai = NULL,
-                              num_basis = 30, betaprec = 1e-6, order = 2, pred_step = 1, likelihood, deriv = 0) {
+                              num_basis = 30, betaprec = 1e-6, order = 1, pred_step = 1, likelihood, deriv = 0) {
   # Check that posterior_weights and psd_values match in length
   if (length(posterior_weights) != length(psd_values)) {
     stop("posterior_weights and psd_values must have the same length.")
@@ -201,8 +201,10 @@ fash_bma_sampling <- function(data_i, posterior_weights, psd_values, refined_x, 
   # Normalize posterior_weights to ensure they sum to 1
   posterior_weights <- posterior_weights / sum(posterior_weights)
 
-  # Sample PSD values and count occurrences
-  sampled_counts <- table(sample(psd_values, size = M, replace = TRUE, prob = posterior_weights))
+  # Sample PSD values (by index, so a single PSD value is never mistaken
+  # for the sample() shorthand of 1:n) and count occurrences
+  sampled_idx <- sample.int(length(psd_values), size = M, replace = TRUE, prob = posterior_weights)
+  sampled_counts <- table(psd_values[sampled_idx])
 
   # Initialize matrix to store posterior samples
   n_points <- length(refined_x)

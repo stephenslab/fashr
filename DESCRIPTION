@@ -1,15 +1,16 @@
 Encoding: UTF-8
 Type: Package
 Package: fashr
-Version: 0.1.42
-Date: 2025-12-09
+Version: 0.1.43
+Date: 2026-08-20
 Title: Flexible Functional Adaptive SHrinkage Through Empirical Bayes
 Authors@R: c(person("Ziang","Zhang",role=c("aut","cre"),
 		    email = "aguero.zhang@gmail.com"),
 	     person("Peter","Carbonetto",role="aut"),
              person("Matthew","Stephens",role="aut"))
-Description: Implements an empirical Bayes approach to 
-    functional adaptive shrinkage.
+Description: Implements the functional adaptive shrinkage (FASH) methods
+    for empirical Bayes analysis of functional effects described in
+    Zhang, Carbonetto and Stephens (2026) <doi:10.48550/arXiv.2602.03077>.
 URL: https://github.com/stephenslab/fashr/
 BugReports: https://github.com/stephenslab/fashr/issues
 License: GPL (>= 3)
@@ -29,9 +30,11 @@ Imports:
     reshape2,
     ggplot2,
     cowplot
-Suggests: 
+Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 LinkingTo: TMB
 NeedsCompilation: yes
 RoxygenNote: 7.3.3

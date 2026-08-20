@@ -111,7 +111,7 @@ min_lfsr_sampling <- function(fash_fit, smooth_var = NULL, M = 3000, num_cores =
   # Validate input
   if (!inherits(fash_fit, "fash")) stop("fash_fit must be a `fash` object.")
   if (!is.numeric(M) || M <= 0 || M %% 1 != 0) stop("M must be a positive integer.")
-  if (!is.numeric(num_cores) || num_cores < 1 || num_cores %% 1 != 0) stop("num_cores must be a positive integer.")
+  num_cores <- sanitize_num_cores(num_cores)
 
   # Define the function to compute min LFSR for a single dataset
   compute_min_lfsr <- function(i) {
@@ -204,7 +204,7 @@ compute_posterior_sign_prob <- function(mu, sigma2) {
 #'
 #' @keywords internal
 #'
-compute_marginal_mean_var_once <- function(data_i, refined_x, psd_iwp, Si = NULL, Omegai = NULL, num_basis = 30, betaprec = 1e-6, order = 2, pred_step = 1, likelihood, deriv = 0) {
+compute_marginal_mean_var_once <- function(data_i, refined_x, psd_iwp, Si = NULL, Omegai = NULL, num_basis = 30, betaprec = 1e-6, order = 1, pred_step = 1, likelihood, deriv = 0) {
   # Create the tmbdat object using the existing helper function
   tmbdat <- fash_set_tmbdat(data_i, Si, Omegai, num_basis = num_basis, betaprec = betaprec, order = order)
 
@@ -276,7 +276,7 @@ compute_marginal_mean_var_once <- function(data_i, refined_x, psd_iwp, Si = NULL
 #' @keywords internal
 compute_marginal_mean_var <- function(data_i, psd_values, refined_x,
                                       Si = NULL, Omegai = NULL, num_basis = 30, betaprec = 1e-6,
-                                      order = 2, pred_step = 1, likelihood, deriv = 0) {
+                                      order = 1, pred_step = 1, likelihood, deriv = 0) {
 
   # Initialize matrices to store results
   mean_matrix <- matrix(0, nrow = length(refined_x), ncol = length(psd_values))
@@ -307,6 +307,15 @@ compute_marginal_mean_var <- function(data_i, psd_values, refined_x,
 #' for a specific dataset in a \code{fash} object using the posterior mean and variance
 #' instead of sampling-based methods.
 #'
+#' @details
+#' The LFSR is computed as \code{pmin(pos_prob, neg_prob)}, where the sign
+#' probabilities are averaged over the mixture components of the posterior.
+#' Note that this function assesses the sign of the nonparametric (spline)
+#' deviation from the base model, whereas \code{compute_lfsr_sampling}
+#' assesses the sign of \code{f(x) - f(x[1])}, the change of the sampled
+#' function relative to its value at the first evaluation point. The two
+#' versions therefore quantify slightly different notions of "sign" and can
+#' differ, especially for higher-order IWP models.
 #' @param object A \code{fash} object containing the fitted results.
 #' @param index An integer specifying the dataset index.
 #' @param smooth_var A numeric vector specifying refined x values for evaluation.
@@ -342,7 +351,7 @@ compute_lfsr_summary <- function(object, index = 1, smooth_var = NULL, deriv = 0
   if (!inherits(object, "fash")) {
     stop("Input must be a `fash` object.")
   }
-  if (index < 1 || index > length(object$posterior_weights)) {
+  if (index < 1 || index > nrow(object$posterior_weights)) {
     stop("Index is out of range for the datasets in the `fash` object.")
   }
 
@@ -384,10 +393,16 @@ compute_lfsr_summary <- function(object, index = 1, smooth_var = NULL, deriv = 0
   neg_prob_matrix <- do.call(cbind, lapply(prob_list, function(df) df$neg_prob))
   lfsr_matrix <- do.call(cbind, lapply(prob_list, function(df) df$lfsr))
 
-  # Compute final weighted probability across all PSD values
+  # Compute final weighted probability across all PSD values.
+  # The lfsr is computed from the sign probabilities of the full posterior
+  # mixture, i.e., pmin(P(effect >= 0), P(effect <= 0)) where each sign
+  # probability is averaged over the mixture components. Averaging the
+  # per-component lfsr values instead would systematically understate the
+  # lfsr (anti-conservative), since the minimum of averages is always at
+  # least the average of minimums.
   weighted_pos_prob <- as.numeric(pos_prob_matrix %*% posterior_weights)
   weighted_neg_prob <- as.numeric(neg_prob_matrix %*% posterior_weights)
-  weighted_lfsr <- as.numeric(lfsr_matrix %*% posterior_weights)
+  weighted_lfsr <- pmin(weighted_pos_prob, weighted_neg_prob)
 
   # Return final results as a data frame
   return(data.frame(
@@ -447,7 +462,7 @@ min_lfsr_summary <- function(object, smooth_var = NULL, num_cores = 1, deriv = 0
 
   # Validate input
   if (!inherits(object, "fash")) stop("Input must be a `fash` object.")
-  if (!is.numeric(num_cores) || num_cores < 1 || num_cores %% 1 != 0) stop("num_cores must be a positive integer.")
+  num_cores <- sanitize_num_cores(num_cores)
 
   # Define function to compute min LFSR for a single dataset
   compute_min_lfsr_single <- function(i) {

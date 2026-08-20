@@ -4,19 +4,25 @@
 \alias{BF_control}
 \title{Perform Bayes Factor-Based Control for Estimating \eqn{\pi_0}}
 \usage{
-BF_control(BF, plot = FALSE)
+BF_control(BF, plot = FALSE, epsilon = .Machine$double.eps)
 }
 \arguments{
 \item{BF}{A numeric vector of Bayes Factors computed from `BF_compute()`.}
 
 \item{plot}{A logical value. If \code{TRUE}, generates diagnostic plots for BF control.}
+
+\item{epsilon}{A small non-negative numeric value making the threshold selection strict:
+the BF threshold \eqn{c^*} is the smallest \eqn{c} such that
+\eqn{E(BF \mid BF \le c) \ge 1 + \epsilon}. Defaults to
+\code{.Machine$double.eps}, which leaves the results essentially unchanged
+while ruling out selection at exact equality.}
 }
 \value{
 A list containing:
 \describe{
   \item{mu}{Cumulative mean of sorted Bayes Factors.}
   \item{pi0_hat}{Estimated \eqn{\pi_0} values for each BF threshold.}
-  \item{pi0_hat_star}{Final estimated \eqn{\pi_0} based on the first BF threshold where \eqn{E(BF) \geq 1}.}
+  \item{pi0_hat_star}{Final estimated \eqn{\pi_0} based on the first BF threshold where \eqn{E(BF \mid BF \le c) \ge 1 + \epsilon}.}
 }
 }
 \description{

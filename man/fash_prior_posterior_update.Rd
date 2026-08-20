@@ -4,7 +4,7 @@
 \alias{fash_prior_posterior_update}
 \title{Update Prior and Posterior Weights Given \eqn{\pi_0} and \eqn{\pi_{alt}}}
 \usage{
-fash_prior_posterior_update(L_matrix, pi0, pi_alt, grid)
+fash_prior_posterior_update(L_matrix, pi0, pi_alt, grid, null_col = 1)
 }
 \arguments{
 \item{L_matrix}{A numeric matrix representing the log-likelihoods of datasets across mixture components.
@@ -15,6 +15,9 @@ Rows correspond to datasets, and columns correspond to mixture components.}
 \item{pi_alt}{A numeric vector representing the estimated weights of the alternative components.}
 
 \item{grid}{A numeric vector representing the grid of Predictive Standard Deviation (PSD) values.}
+
+\item{null_col}{An integer giving the column of \code{L_matrix} (and position in \code{grid})
+corresponding to the null component (PSD = 0). Defaults to 1.}
 }
 \value{
 A list containing:
@@ -37,7 +40,7 @@ proportion of null datasets (\eqn{\pi_0}) and the reweighted prior under the alt
 set.seed(1)
 L_matrix <- matrix(rnorm(50), nrow = 10, ncol = 5)
 pi0_hat <- 0.8
-pi_alt <- rep(0.2, 4)  # Alternative weights
+pi_alt <- rep(0.25, 4)  # Alternative weights
 grid <- seq(0, 2, length.out = 5)
 update_result <- fashr:::fash_prior_posterior_update(L_matrix, pi0_hat, pi_alt, grid)
 

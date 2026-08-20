@@ -4,26 +4,34 @@
 \alias{collapse_L}
 \title{Collapse a Likelihood Matrix for Bayes Factor Computation}
 \usage{
-collapse_L(L, log = FALSE)
+collapse_L(L, log = FALSE, weights = NULL)
 }
 \arguments{
 \item{L}{A numeric matrix representing the likelihoods. Rows correspond to datasets, and
 columns correspond to mixture components (including the null component in the first column).}
 
 \item{log}{A logical value. If \code{TRUE}, treats \code{L} as a log-likelihood matrix.}
+
+\item{weights}{An optional numeric vector of non-negative weights for the alternative
+components (one per non-null column of \code{L}, in the same order). When provided, these
+weights are normalized and used directly instead of re-estimating them with mix-SQP.
+This is preferable when the mixture weights have already been estimated, for example
+with a Dirichlet penalty (\code{penalty > 1} in \code{fash}), since re-estimating them
+here would silently discard the penalty.}
 }
 \value{
 A list containing:
 \describe{
   \item{L_c}{A 2-column matrix where the first column corresponds to the null likelihood
   and the second column corresponds to the reweighted alternative likelihood.}
-  \item{pi_hat_star}{A numeric vector of mixture weights estimated under the alternative hypothesis.}
+  \item{pi_hat_star}{A numeric vector of mixture weights used for the alternative hypothesis.}
 }
 }
 \description{
 This function collapses a likelihood matrix into a 2-column matrix, reweighting the likelihood
-under the alternative hypothesis. This is done using the mix-SQP algorithm to estimate
-the optimal mixture weights under the alternative hypothesis.
+under the alternative hypothesis. By default the weights of the alternative components are
+estimated with the mix-SQP algorithm, but pre-estimated weights (e.g., the prior weights
+already fitted by \code{fash} or \code{BF_update}) can be supplied through \code{weights}.
 }
 \examples{
 # Example likelihood matrix (log-space)
@@ -31,6 +39,10 @@ set.seed(1)
 L <- matrix(abs(rnorm(20)), nrow = 5, ncol = 4)
 collapse_result <- fashr:::collapse_L(L, log = FALSE)
 print(collapse_result$L_c)
+
+# Using pre-estimated weights for the alternative components
+collapse_result2 <- fashr:::collapse_L(L, log = FALSE, weights = c(0.2, 0.3, 0.5))
+print(collapse_result2$L_c)
 
 }
 \keyword{internal}

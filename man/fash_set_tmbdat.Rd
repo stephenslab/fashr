@@ -10,7 +10,7 @@ fash_set_tmbdat(
   Omegai = NULL,
   num_basis = 30,
   betaprec = 1e-06,
-  order = 2
+  order = 1
 )
 }
 \arguments{

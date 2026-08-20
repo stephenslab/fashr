@@ -30,7 +30,7 @@ fash_set_data(
 A list with the following components:
 \item{data_list}{A list of data frames, where each data frame corresponds to a row of \code{Y}. Each data frame contains:
   \describe{
-    \item{\code{y}}{The response variables for the corresponding row of \code{NULL}.}
+    \item{\code{y}}{The response variables for the corresponding row of \code{Y}.}
     \item{\code{x}}{The smoothing variables for the corresponding row of \code{smooth_var}.}
     \item{\code{offset}}{The offset values for the corresponding row of \code{offset}.}
   }

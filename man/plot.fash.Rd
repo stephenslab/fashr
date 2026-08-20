@@ -8,6 +8,7 @@
   x,
   plot_type = c("heatmap", "structure", "function"),
   ordering = NULL,
+  include_se = TRUE,
   discrete = FALSE,
   selected_unit = NULL,
   ...
@@ -29,8 +30,12 @@ One of:
   - \code{"lfdr"}: Reorder by the local false discovery rate.
   - \code{NULL}: No reordering (default).}
 
+\item{include_se}{A logical value. If \code{TRUE}, includes (+-2) standard error bars for the observed data points.}
+
 \item{discrete}{A logical value. If \code{TRUE}, treats PSD values as discrete categories with distinct colors
 in the structure plot. Ignored if \code{plot_type = "heatmap"} or \code{"function"}.}
+
+\item{selected_unit}{An integer specifying which unit (dataset index) to visualize when \code{plot_type = "function"}.}
 
 \item{...}{Additional arguments passed to \code{plot_heatmap}, \code{fash_structure_plot} or \code{plot_function},}
 }

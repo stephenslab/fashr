@@ -15,7 +15,6 @@ Type objective_function<Type>::operator() ()
 
   // Parameter
   PARAMETER_VECTOR(W);
-  int Wdim = W.size();
   int betadim = d_beta;
   vector<Type> beta(betadim);
   for (int i=0;i<betadim;i++) beta(i) = W(i);

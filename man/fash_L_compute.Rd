@@ -12,7 +12,7 @@ fash_L_compute(
   pred_step = 1,
   num_basis = 30,
   betaprec = 1e-06,
-  order = 2,
+  order = 1,
   verbose = FALSE
 )
 }

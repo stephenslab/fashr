@@ -14,6 +14,28 @@ dummy <- function() {
   NULL
 }
 
+#' Validate the requested number of cores for parallel processing
+#'
+#' \code{parallel::mclapply} relies on forking, which is not available on
+#' Windows. This helper falls back to sequential execution (with a warning)
+#' on platforms where forking is unsupported.
+#'
+#' @param num_cores An integer specifying the requested number of cores.
+#' @return An integer number of cores that is safe to use on this platform.
+#'
+#' @keywords internal
+#'
+sanitize_num_cores <- function(num_cores) {
+  if (!is.numeric(num_cores) || length(num_cores) != 1 || num_cores < 1 || num_cores %% 1 != 0) {
+    stop("num_cores must be a positive integer.")
+  }
+  if (num_cores > 1 && .Platform$OS.type == "windows") {
+    warning("Parallel processing via forking is not supported on Windows; using num_cores = 1.")
+    return(1L)
+  }
+  as.integer(num_cores)
+}
+
 #' Constructing and evaluating the global polynomials, to account for boundary conditions (design matrix)
 #'
 #' @param x A vector of locations to evaluate the global polynomials
@@ -127,7 +149,7 @@ compute_weights_precision_helper <- function(x){
 #' @return A list with the following components:
 #' \item{data_list}{A list of data frames, where each data frame corresponds to a row of \code{Y}. Each data frame contains:
 #'   \describe{
-#'     \item{\code{y}}{The response variables for the corresponding row of \code{NULL}.}
+#'     \item{\code{y}}{The response variables for the corresponding row of \code{Y}.}
 #'     \item{\code{x}}{The smoothing variables for the corresponding row of \code{smooth_var}.}
 #'     \item{\code{offset}}{The offset values for the corresponding row of \code{offset}.}
 #'   }
@@ -175,21 +197,15 @@ fash_set_data <- function(Y, smooth_var, offset = 0, S = NULL, Omega = NULL, dat
       x <- df[[smooth_var]]
 
       # Extract or process offset
-      if (is.character(offset) && offset %in% names(df)) {
-        offset_value <- df[[offset]]
-      } else {
-        # Handle offset as matrix/vector/scalar
-        n <- length(y)
-        if (is.matrix(offset)) {
-          if (nrow(offset) != n_datasets || ncol(offset) != ncol(Y)) {
-            stop("offset must have the same dimensions as Y if it is a matrix.")
-          }
-        } else if (length(offset) == 1) {
-          offset <- rep(offset, n)
-        } else {
-          stop("When using data_list, offset must be a valid column name or a scalar value.")
+      if (is.character(offset)) {
+        if (!offset %in% names(df)) {
+          stop(sprintf("Offset variable '%s' not found in data frame.", offset))
         }
-        offset_value <- offset
+        offset_value <- df[[offset]]
+      } else if (is.numeric(offset) && length(offset) == 1) {
+        offset_value <- rep(offset, length(y))
+      } else {
+        stop("When using data_list, offset must be a valid column name or a scalar value.")
       }
 
       # Return processed data frame
@@ -313,7 +329,7 @@ fash_set_data <- function(Y, smooth_var, offset = 0, S = NULL, Omega = NULL, dat
 #'
 #' @export
 #'
-fash_set_tmbdat <- function(data_i, Si = NULL, Omegai = NULL, num_basis = 30, betaprec = 1e-6, order = 2) {
+fash_set_tmbdat <- function(data_i, Si = NULL, Omegai = NULL, num_basis = 30, betaprec = 1e-6, order = 1) {
   # Extract smoothing variables and response
   y <- data_i$y
   x <- data_i$x

@@ -39,7 +39,8 @@
 #'
 #' @keywords internal
 #'
-fash_L_compute <- function(fash_data, likelihood = "gaussian", num_cores = 1, grid = seq(0, 2, length.out = 10), pred_step = 1, num_basis = 30, betaprec = 1e-6, order = 2, verbose = FALSE) {
+fash_L_compute <- function(fash_data, likelihood = "gaussian", num_cores = 1, grid = seq(0, 2, length.out = 10), pred_step = 1, num_basis = 30, betaprec = 1e-6, order = 1, verbose = FALSE) {
+  num_cores <- sanitize_num_cores(num_cores)
   num_datasets <- length(fash_data$data_list)
   datasets <- fash_data$data_list
   S_list <- fash_data$S
@@ -167,7 +168,7 @@ fash_L_compute <- function(fash_data, likelihood = "gaussian", num_cores = 1, gr
 #' @importFrom TMB MakeADFun
 #' @keywords internal
 #'
-compute_L_gaussian_helper <- function(data_i, Si, Omegai, psd_iwp, num_basis = 30, betaprec = 1e-6, order = 2, pred_step = 1) {
+compute_L_gaussian_helper <- function(data_i, Si, Omegai, psd_iwp, num_basis = 30, betaprec = 1e-6, order = 1, pred_step = 1) {
   # Create the tmbdat object using existing helper function
   tmbdat <- fash_set_tmbdat(data_i, Si, Omegai, num_basis = num_basis, betaprec = betaprec, order = order)
 
@@ -259,7 +260,7 @@ compute_L_gaussian_helper <- function(data_i, Si, Omegai, psd_iwp, num_basis = 3
 #'
 #' @keywords internal
 #'
-compute_L_gaussian_helper_seq <- function(data_i, Si, Omegai, grid, num_basis = 30, betaprec = 1e-6, order = 2, pred_step = 1) {
+compute_L_gaussian_helper_seq <- function(data_i, Si, Omegai, grid, num_basis = 30, betaprec = 1e-6, order = 1, pred_step = 1) {
   # Initialize vector to store log-likelihoods
   log_likelihoods <- numeric(length(grid))
 
@@ -313,7 +314,7 @@ compute_L_gaussian_helper_seq <- function(data_i, Si, Omegai, grid, num_basis = 
 #'
 #' @keywords internal
 #'
-compute_L_poisson_helper_seq <- function(data_i, grid, num_basis = 30, betaprec = 1e-6, order = 2, pred_step = 1) {
+compute_L_poisson_helper_seq <- function(data_i, grid, num_basis = 30, betaprec = 1e-6, order = 1, pred_step = 1) {
   # Initialize vector to store log-likelihoods
   log_likelihoods <- numeric(length(grid))
 
@@ -369,7 +370,7 @@ compute_L_poisson_helper_seq <- function(data_i, grid, num_basis = 30, betaprec 
 #'
 #' @keywords internal
 #'
-compute_L_poisson_helper <- function(data_i, psd_iwp, num_basis = 30, betaprec = 1e-6, order = 2, pred_step = 1) {
+compute_L_poisson_helper <- function(data_i, psd_iwp, num_basis = 30, betaprec = 1e-6, order = 1, pred_step = 1) {
   # Create the tmbdat object using existing helper function
   tmbdat <- fash_set_tmbdat(data_i, num_basis = num_basis, betaprec = betaprec, order = order)
 

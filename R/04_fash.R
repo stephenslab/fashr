@@ -72,6 +72,11 @@ fash <- function(Y, smooth_var, offset = 0, S = NULL,
     grid <- c(0, grid)
   }
 
+  # Sort the grid (and drop duplicates) so that the null component (PSD = 0)
+  # is always the first column of the likelihood matrix; downstream functions
+  # such as BF_compute and BF_update rely on this ordering.
+  grid <- sort(unique(grid))
+
   # If likelihood is "gaussian", ensure either S or Omega is provided
   likelihood <- match.arg(likelihood)
   if (likelihood == "gaussian") {
@@ -134,6 +139,7 @@ fash <- function(Y, smooth_var, offset = 0, S = NULL,
   if(0 %in% eb_result$prior_weight$psd){
     lfdr <- eb_result$posterior_weight[, which(eb_result$prior_weight$psd == 0)]
   }else{
+    warning("The estimated prior weight of the null component (PSD = 0) is zero; lfdr is set to 0 for all datasets.")
     lfdr <- rep(0, nrow(eb_result$posterior_weight))
   }
 
@@ -416,6 +422,8 @@ plot.fash <- function(x,
 #'
 #' @keywords internal
 #'
+#' @importFrom graphics plot
+#' @importFrom graphics arrows
 #' @importFrom graphics lines
 #' @importFrom graphics polygon
 #' @importFrom grDevices rgb
@@ -549,7 +557,7 @@ predict.fash <- function (object, index = 1, smooth_var = NULL, only.samples = F
   }
 
   if(is.numeric(index)){
-    if (index < 1 || index > length(object$posterior_weights)) {
+    if (index < 1 || index > nrow(object$posterior_weights)) {
       stop("Index is out of range for the datasets in the `fash` object.")
     }
   }
@@ -700,6 +708,7 @@ testing_functional <- function(functional,
                                fash, indices,
                                smooth_var = NULL,
                                num_cores = 1) {
+  num_cores <- sanitize_num_cores(num_cores)
   # Define the function to be run for each index
   compute_lfsr <- function(index) {
     sample_index <- predict(fash, index = index, smooth_var = smooth_var, only.samples = TRUE)
@@ -1040,8 +1049,8 @@ simulate_IWP <- function(n_samps = 1,
   # Knots for the spline basis
   knots <- seq(x_min, x_max, length.out = n_basis)
 
-  spline_new   <- fashr:::local_poly_helper(knots = knots, refined_x = x_new, p = p)
-  x_new_design <- fashr:::global_poly_helper(x = x_new, p = p)
+  spline_new   <- local_poly_helper(knots = knots, refined_x = x_new, p = p)
+  x_new_design <- global_poly_helper(x = x_new, p = p)
 
   if(psd > 0){
     # Precision for spline weights (IWP part), scaled to match target PSD
@@ -1050,7 +1059,7 @@ simulate_IWP <- function(n_samps = 1,
         (((2 * p) - 1) * (factorial(p - 1)^2))
     )
 
-    prec_mat <- (1 / sd_function^2) * fashr:::compute_weights_precision_helper(knots)
+    prec_mat <- (1 / sd_function^2) * compute_weights_precision_helper(knots)
 
     # Basis weights for the IWP component
     weights <- LaplacesDemon::rmvnp(
@@ -1215,7 +1224,7 @@ simulate_fash_prior <- function(fash_obj,
   #    regress out polynomial component from each sample
   # ------------------------------------------------------------
   if (constraints == "orthogonal") {
-    X_poly <- fashr:::global_poly_helper(x = x_new_common, p = p)  # n × p
+    X_poly <- global_poly_helper(x = x_new_common, p = p)  # n × p
     XtX <- crossprod(X_poly)
     XtX_inv <- solve(XtX)
     Xt <- t(X_poly)

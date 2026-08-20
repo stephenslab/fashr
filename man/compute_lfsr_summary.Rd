@@ -31,6 +31,16 @@ This function computes the local false sign rate (LFSR) at each evaluation point
 for a specific dataset in a \code{fash} object using the posterior mean and variance
 instead of sampling-based methods.
 }
+\details{
+The LFSR is computed as \code{pmin(pos_prob, neg_prob)}, where the sign
+probabilities are averaged over the mixture components of the posterior.
+Note that this function assesses the sign of the nonparametric (spline)
+deviation from the base model, whereas \code{compute_lfsr_sampling}
+assesses the sign of \code{f(x) - f(x[1])}, the change of the sampled
+function relative to its value at the first evaluation point. The two
+versions therefore quantify slightly different notions of "sign" and can
+differ, especially for higher-order IWP models.
+}
 \examples{
 # Example usage
 set.seed(1)

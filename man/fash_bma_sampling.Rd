@@ -14,7 +14,7 @@ fash_bma_sampling(
   Omegai = NULL,
   num_basis = 30,
   betaprec = 1e-06,
-  order = 2,
+  order = 1,
   pred_step = 1,
   likelihood,
   deriv = 0

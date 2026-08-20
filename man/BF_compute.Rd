@@ -11,11 +11,14 @@ BF_compute(fash)
 }
 \value{
 A numeric vector of Bayes Factors, where each entry corresponds to a dataset.
+  A value of \code{Inf} indicates that the null likelihood underflowed relative to the
+  best-fitting component (overwhelming evidence against the null).
 }
 \description{
 This function computes Bayes Factors (BF) for each dataset in a \code{fash} object.
 The BF is calculated as the ratio of likelihood under the alternative hypothesis
-to the likelihood under the null hypothesis.
+to the likelihood under the null hypothesis, where the alternative components are
+weighted by the prior weights already estimated in the \code{fash} object.
 }
 \examples{
 set.seed(1)

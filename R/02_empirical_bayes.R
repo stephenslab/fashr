@@ -34,7 +34,10 @@ fash_eb_est <- function(L_matrix, penalty = 1, grid) {
   if (penalty > 1) {
     prior_null <- matrix(0, nrow = penalty - 1, ncol = num_components)
     prior_null[, 1] <- 1  # Prior mass on the first grid point
-    L_matrix_original <- rbind(exp(L_matrix), prior_null)
+    # Rescale each row by its maximum before exponentiating to avoid
+    # underflow; the mixture weight estimate is invariant to row scaling.
+    L_matrix_rescaled <- exp(L_matrix - apply(L_matrix, 1, max))
+    L_matrix_original <- rbind(L_matrix_rescaled, prior_null)
     fit.sqp <- mixsqp::mixsqp(
       L = L_matrix_original,
       log = FALSE,

@@ -14,7 +14,8 @@ simulate_nonlinear_function(
 )
 }
 \arguments{
-\item{n_basis}{An integer specifying the number of spline basis functions (minimum 3).}
+\item{n_basis}{An integer controlling the number of spline knots; \code{n_basis - 3}
+equally spaced knots are placed over \code{x_range} (must be at least 5).}
 
 \item{sd_function}{A numeric value representing the predictive standard deviation of the function.}
 

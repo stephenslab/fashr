@@ -30,8 +30,10 @@ simulate_data <- function(g, x = NULL, sd = 0.1){
   if (is.null(x)) {
     x <- 1:16
   }
-  # simulate sd from sampling from sd with replacement
-  sd <- sample(x = sd, size = length(x), replace = TRUE)
+  # simulate sd by sampling from sd with replacement (indexing by position,
+  # so a scalar sd such as sd = 2 is used as-is rather than triggering the
+  # sample() shorthand of sampling from 1:sd)
+  sd <- sd[sample.int(length(sd), size = length(x), replace = TRUE)]
   y <- g(x) + rnorm(n = length(x), sd = sd, mean = 0)
   return(data.frame(x = x, y = y, truef = g(x), sd = sd))
 }
@@ -41,7 +43,8 @@ simulate_data <- function(g, x = NULL, sd = 0.1){
 #' This function generates a random smooth function sampled from an Integrated Wiener Process (IWP) prior,
 #' parameterized by the number of basis functions and smoothing parameters.
 #'
-#' @param n_basis An integer specifying the number of spline basis functions (minimum 3).
+#' @param n_basis An integer controlling the number of spline knots; \code{n_basis - 3}
+#'   equally spaced knots are placed over \code{x_range} (must be at least 5).
 #' @param sd_function A numeric value representing the predictive standard deviation of the function.
 #' @param sd_poly A numeric value specifying the standard deviation for the linear polynomial component.
 #' @param p An integer specifying the order of the polynomial trend component (default is 1 for linear).
@@ -63,7 +66,7 @@ simulate_data <- function(g, x = NULL, sd = 0.1){
 #' @keywords internal
 #'
 simulate_nonlinear_function <- function(n_basis = 20, sd_function = 1, sd_poly = 0.1, p = 1, pred_step = 16, x_range = NULL) {
-  if(n_basis < 3) stop("n_basis must be greater than 3")
+  if(n_basis < 5) stop("n_basis must be at least 5 (n_basis - 3 knots are used, and at least 2 knots are needed)")
 
   if(is.null(x_range)) {
     x_range <- c(0, 16)
@@ -78,7 +81,7 @@ simulate_nonlinear_function <- function(n_basis = 20, sd_function = 1, sd_poly =
 
   # Generate random weights for the basis functions
   sd_function <- sd_function/sqrt((pred_step^((2 * p) - 1)) / (((2 * p) - 1) * (factorial(p - 1)^2)))
-  prec_mat <- (1/sd_function^2) * fashr:::compute_weights_precision_helper(knots)
+  prec_mat <- (1/sd_function^2) * compute_weights_precision_helper(knots)
   weights <- as.vector(LaplacesDemon::rmvnp(n = 1, mu = rep(0, ncol(prec_mat)), Omega = prec_mat))
   # Generate random weights for the linear functions
   beta_vec <- rnorm(n = p, mean = 0, sd = sd_poly)
@@ -86,8 +89,8 @@ simulate_nonlinear_function <- function(n_basis = 20, sd_function = 1, sd_poly =
   # Return a function that evaluates the spline at new x values
   function(x_new) {
     # Create the spline basis for the new x values using the predefined knots
-    spline_new <- fashr:::local_poly_helper(knots = knots, refined_x = x_new, p = p)
-    x_new_design <- fashr:::global_poly_helper(x = x_new, p = p)
+    spline_new <- local_poly_helper(knots = knots, refined_x = x_new, p = p)
+    x_new_design <- global_poly_helper(x = x_new, p = p)
     # Return the function
     return(x_new_design %*% beta_vec + as.vector(spline_new %*% weights))
   }
@@ -214,7 +217,7 @@ simulate_process <- function(x = NULL, n_basis = 50, sd_fun = 1, sd = 0.1, sd_po
     g <- simulate_nondynamic_function(sd_poly = sd_poly)
   }
   else {
-    stop("type must be one of 'linear', 'nonlinear', 'nondynamic'")
+    stop("type must be one of 'linear', 'nonlinear', 'quadratic', 'nondynamic'")
   }
 
   if(normalize){
